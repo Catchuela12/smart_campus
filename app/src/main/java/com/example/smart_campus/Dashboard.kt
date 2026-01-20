@@ -94,6 +94,38 @@ fun DashboardScreen(
                     )
                 }
 
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                NavigationDrawerItem(
+                    label = { Text("Profile") },
+                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() } }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text("Settings") },
+                    icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() } }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text("About Info") },
+                    icon = { Icon(Icons.Default.Info, contentDescription = null) },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() } }
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                NavigationDrawerItem(
+                    label = { Text("Logout") },
+                    icon = { Icon(Icons.Default.ExitToApp, contentDescription = null) },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() } }
+                )
             }
         }
     ) {
