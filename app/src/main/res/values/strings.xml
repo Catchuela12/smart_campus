@@ -2,4 +2,5 @@
     <string name="app_name">smart_campus</string>
     <string name="title_activity_login_screen">LoginScreen</string>
     <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_campus_info">CampusInfo</string>
 </resources>

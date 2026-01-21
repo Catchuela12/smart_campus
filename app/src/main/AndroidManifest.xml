@@ -12,11 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Smart_campus">
         <activity
+            android:name=".CampusInfo"
+            android:exported="false"
+            android:label="@string/title_activity_campus_info"
+            android:theme="@style/Theme.Smart_campus" />
+        <activity
             android:name=".Dashboard"
             android:exported="false"
             android:label="@string/title_activity_dashboard"
-            android:theme="@style/Theme.Smart_campus" />
-        <!-- Login Screen (Launcher) -->
+            android:theme="@style/Theme.Smart_campus" /> <!-- Login Screen (Launcher) -->
         <activity
             android:name=".LoginScreen"
             android:exported="true"
