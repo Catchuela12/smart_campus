@@ -45,7 +45,7 @@ fun CampusInfoScreen(modifier: Modifier = Modifier) {
     val colleges = listOf(
         College(
             "College of Health and Allied Sciences",
-            "",
+            "none",
             R.drawable.chas
         ),
         College(
