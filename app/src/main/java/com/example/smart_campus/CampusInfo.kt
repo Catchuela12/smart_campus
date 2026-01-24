@@ -45,17 +45,17 @@ fun CampusInfoScreen(modifier: Modifier = Modifier) {
     val colleges = listOf(
         College(
             "College of Health and Allied Sciences",
-            "none",
+            "chas.new.email@gmail.com",
             R.drawable.chas
         ),
         College(
             "College of Business, Accountancy and Administration",
-            "none",
+            "pnccbaa@gmail.com",
             R.drawable.cbaa
         ),
         College(
             "College of Computing Studies",
-            "",
+            "ccscsg@pnc.edu.ph",
             R.drawable.ccs
         ),
         College(
@@ -65,12 +65,12 @@ fun CampusInfoScreen(modifier: Modifier = Modifier) {
         ),
         College(
             "College of Education",
-            "",
+            "coedcsg@pnc.edu.ph",
             R.drawable.coed
         ),
         College(
             "College of Arts and Sciences",
-            "",
+            "pnccas23@gmail.com",
             R.drawable.cas
         )
     )
