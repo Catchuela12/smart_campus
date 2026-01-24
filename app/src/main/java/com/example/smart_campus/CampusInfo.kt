@@ -60,7 +60,7 @@ fun CampusInfoScreen(modifier: Modifier = Modifier) {
         ),
         College(
             "College of Engineering",
-            "",
+            "coe@gmail.com",
             R.drawable.coe
         ),
         College(
