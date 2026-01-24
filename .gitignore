@@ -1,3 +1,4 @@
+# Android Studio / IntelliJ
 *.iml
 .gradle
 /local.properties
@@ -7,7 +8,17 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+
+# Added .idea XML files
+/.idea/AndroidProjectSystem.xml
+/.idea/deploymentTargetSelector.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+
+# System files
 .DS_Store
+
+# Build outputs
 /build
 /captures
 .externalNativeBuild
