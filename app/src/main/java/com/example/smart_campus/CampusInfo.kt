@@ -50,7 +50,7 @@ fun CampusInfoScreen(modifier: Modifier = Modifier) {
         ),
         College(
             "College of Business, Accountancy and Administration",
-            "",
+            "none",
             R.drawable.cbaa
         ),
         College(
