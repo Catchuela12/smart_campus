@@ -134,7 +134,7 @@ fun ProfileView() {
 @Composable
 fun InfoActionCard(icon: ImageVector, label: String, value: String, onClick: () -> Unit) {
     Card(
-        onClick = onClick, // Ginawang clickable ang card
+        onClick = onClick, // Ginawang clickable ang card.
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)),
         shape = RoundedCornerShape(16.dp)
