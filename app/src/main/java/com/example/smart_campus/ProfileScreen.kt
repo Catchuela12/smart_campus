@@ -14,7 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.* // Import para sa state management
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +41,43 @@ class ProfileScreen : ComponentActivity() {
 @Composable
 fun ProfileView() {
     val context = LocalContext.current
-    val scrollState = rememberScrollState() // Para pwedeng i-scroll ang page
+    val scrollState = rememberScrollState()
+
+    // --- COMMIT 4: STATE MANAGEMENT ---
+    // Gagamit tayo ng 'remember' para hindi mawala ang data pag nag-recompose
+    var showDialog by remember { mutableStateOf(false) }
+    var userName by remember { mutableStateOf("Juan Dela Cruz") }
+    var textFieldValue by remember { mutableStateOf(userName) }
+
+    // Logic para sa Popup/Dialog
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Edit Profile Name") },
+            text = {
+                OutlinedTextField(
+                    value = textFieldValue,
+                    onValueChange = { textFieldValue = it },
+                    label = { Text("Enter Name") },
+                    singleLine = true
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    userName = textFieldValue
+                    showDialog = false
+                    Toast.makeText(context, "Name updated successfully!", Toast.LENGTH_SHORT).show()
+                }) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -49,10 +85,10 @@ fun ProfileView() {
                 .padding(innerPadding)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(scrollState), // Enable scrolling
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // --- Header Section ---
+            // Header Section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,8 +116,9 @@ fun ProfileView() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Dito lalabas yung 'userName' na pwedeng palitan
             Text(
-                text = "Juan Dela Cruz",
+                text = userName,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold
             )
@@ -93,7 +130,6 @@ fun ProfileView() {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            // --- COMMIT 3: Account & App Settings ---
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,6 +138,17 @@ fun ProfileView() {
             ) {
                 Text("Account Information", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
 
+                // Pag pinindot ito, lalabas ang edit dialog
+                InfoActionCard(
+                    icon = Icons.Default.Edit,
+                    label = "Display Name",
+                    value = userName,
+                    onClick = {
+                        textFieldValue = userName
+                        showDialog = true
+                    }
+                )
+
                 InfoActionCard(
                     icon = Icons.Default.Email,
                     label = "Campus Email",
@@ -109,18 +156,9 @@ fun ProfileView() {
                     onClick = { Toast.makeText(context, "Opening Email...", Toast.LENGTH_SHORT).show() }
                 )
 
-                Text("Preferences", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 8.dp))
-
-                InfoActionCard(
-                    icon = Icons.Default.Notifications,
-                    label = "Notifications",
-                    value = "Enabled",
-                    onClick = { Toast.makeText(context, "Notification Settings", Toast.LENGTH_SHORT).show() }
-                )
-
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Logout Button
+                // Logout Button (from Commit 3)
                 Button(
                     onClick = { Toast.makeText(context, "Logging out...", Toast.LENGTH_LONG).show() },
                     modifier = Modifier.fillMaxWidth().height(55.dp),
@@ -158,13 +196,5 @@ fun InfoActionCard(icon: ImageVector, label: String, value: String, onClick: () 
                 Text(text = value, fontSize = 15.sp, fontWeight = FontWeight.Medium)
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfilePreview() {
-    Smart_campusTheme {
-        ProfileView()
     }
 }
