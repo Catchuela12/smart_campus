@@ -80,14 +80,19 @@ fun DashboardScreen(
                     label = { Text("Profile") },
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     selected = false,
-                    onClick = { scope.launch { drawerState.close() } }
+                    onClick = { scope.launch { drawerState.close() }
+                        context.startActivity(Intent(context, ProfileScreen::class.java))
+                    }
                 )
 
                 NavigationDrawerItem(
                     label = { Text("Settings") },
                     icon = { Icon(Icons.Default.Settings, contentDescription = null) },
                     selected = false,
-                    onClick = { scope.launch { drawerState.close() } }
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        context.startActivity(Intent(context, SettingScreen::class.java))
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
