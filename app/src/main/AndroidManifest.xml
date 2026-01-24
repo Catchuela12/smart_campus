@@ -12,6 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Smart_campus">
         <activity
+            android:name=".ProfileScreen"
+            android:exported="false"
+            android:label="@string/title_activity_profile_screen"
+            android:theme="@style/Theme.Smart_campus" />
+        <activity
+            android:name=".SettingScreen"
+            android:exported="false"
+            android:label="@string/title_activity_setting_screen"
+            android:theme="@style/Theme.Smart_campus" />
+        <activity
             android:name=".CampusInfo"
             android:exported="false"
             android:label="@string/title_activity_campus_info"
