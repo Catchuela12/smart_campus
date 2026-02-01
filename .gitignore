@@ -1,26 +1,26 @@
+# =========================
 # Android Studio / IntelliJ
+# =========================
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/.idea/
 
-# Added .idea XML files
-/.idea/AndroidProjectSystem.xml
-/.idea/deploymentTargetSelector.xml
-/.idea/misc.xml
-/.idea/vcs.xml
-
+# =========================
 # System files
+# =========================
 .DS_Store
+Thumbs.db
 
+# =========================
 # Build outputs
+# =========================
 /build
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+
+# =========================
+# Logs
+# =========================
+*.log
