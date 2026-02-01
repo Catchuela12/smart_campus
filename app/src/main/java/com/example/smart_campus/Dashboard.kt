@@ -223,7 +223,7 @@ fun DashboardScreen(
                     title = {
                         Column {
                             Text(
-                                "EXE CAMPUS",
+                                "Smart CAMPUS",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
                             )
@@ -286,6 +286,7 @@ fun DashboardScreen(
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.White.copy(alpha = 0.9f)
                         )
+
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = name.split(" ").firstOrNull() ?: name,
@@ -293,9 +294,10 @@ fun DashboardScreen(
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
+
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Have a productive day! 🎓",
+                            text = "Have a productive day! ",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White.copy(alpha = 0.85f)
                         )
