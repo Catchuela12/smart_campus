@@ -8,10 +8,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.clickable
+
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,10 +35,20 @@ class SettingScreen : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         CenterAlignedTopAppBar(
-                            title = { Text("Settings", color = Color.White, fontWeight = FontWeight.Bold) },
+                            title = {
+                                Text(
+                                    "Settings",
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.White
+                                )
+                            },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
-                                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                                    Icon(
+                                        Icons.Default.ArrowBack,
+                                        contentDescription = "Back",
+                                        tint = Color.White
+                                    )
                                 }
                             },
                             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -42,48 +56,41 @@ class SettingScreen : ComponentActivity() {
                             )
                         )
                     }
-                ) { innerPadding ->
+                ) { padding ->
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(innerPadding)
-                            .background(Color(0xFFF5F5F5))
+                            .padding(padding)
+                            .background(Color(0xFFF2F4F7))
                             .verticalScroll(rememberScrollState())
                             .padding(16.dp)
                     ) {
-                        Text("Account", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SettingsItem(Icons.Default.Person, "Edit Profile")
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SettingsItem(Icons.Default.School, "Academic Records")
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SettingsItem(Icons.Default.Security, "Change Password")
+
+                        SectionTitle("Account")
+                        SectionCard {
+                            SettingsItem(Icons.Default.Person, "Edit Profile")
+                            Divider()
+                            SettingsItem(Icons.Default.School, "Academic Records")
+                            Divider()
+                            SettingsItem(Icons.Default.Security, "Change Password")
+                        }
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        Text("Notifications", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SettingsItem(Icons.Default.Notifications, "Push Notifications")
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SettingsItem(Icons.Default.Email, "Email Announcements")
+                        SectionTitle("Notifications")
+                        SectionCard {
+                            SwitchItem(Icons.Default.Notifications, "Push Notifications")
+                            Divider()
+                            SwitchItem(Icons.Default.Email, "Email Announcements")
+                        }
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        Text("Support & About", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SettingsItem(Icons.Default.Help, "Help Center")
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        Button(
-                            onClick = { },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-                        ) {
-                            Text("Logout", color = Color.White, fontWeight = FontWeight.Bold)
+                        SectionTitle("Support & About")
+                        SectionCard {
+                            SettingsItem(Icons.Default.Help, "Help Center")
+                            Divider()
+                            SettingsItem(Icons.Default.Info, "About App")
                         }
                     }
                 }
@@ -92,26 +99,80 @@ class SettingScreen : ComponentActivity() {
     }
 }
 
+/* ---------- UI COMPONENTS ---------- */
+
+@Composable
+fun SectionTitle(title: String) {
+    Text(
+        text = title,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color(0xFF2E7D32),
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+}
+
+@Composable
+fun SectionCard(content: @Composable ColumnScope.() -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(content = content)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsItem(icon: ImageVector, label: String) {
-    Card(
-        onClick = { },
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(icon, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(24.dp))
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(label, fontSize = 16.sp, color = Color.Black)
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.Gray)
-        }
+        IconContainer(icon)
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(label, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.Black)
+        Spacer(modifier = Modifier.weight(1f))
+        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.Gray)
+    }
+}
+
+@Composable
+fun SwitchItem(icon: ImageVector, label: String) {
+    var checked by remember { mutableStateOf(true) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconContainer(icon)
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(label, fontSize = 16.sp, modifier = Modifier.weight(1f), color = Color.Black)
+        Switch(
+            checked = checked,
+            onCheckedChange = { checked = it },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = Color(0xFF2E7D32)
+            )
+        )
+    }
+}
+
+@Composable
+fun IconContainer(icon: ImageVector) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .background(Color(0xFFE8F5E9), CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(icon, contentDescription = null, tint = Color(0xFF2E7D32))
     }
 }

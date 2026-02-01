@@ -12,7 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,9 +37,7 @@ class CampusInfo : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Smart_campusTheme {
-                Scaffold { padding ->
-                    CampusInfoScreen(Modifier.padding(padding))
-                }
+                CampusInfoScreen()
             }
         }
     }
@@ -49,9 +50,23 @@ data class College(
     val accentColor: Color = Color(0xFF1976D2)
 )
 
+// Custom color palette for Campus Info
+object CampusColors {
+    val PrimaryGreen = Color(0xFF1B5E20)
+    val SecondaryGreen = Color(0xFF2E7D32)
+    val LightGreen = Color(0xFF4CAF50)
+    val AccentGreen = Color(0xFF66BB6A)
+    val BackgroundGray = Color(0xFFF8F9FA)
+    val CardWhite = Color(0xFFFFFFFF)
+    val TextPrimary = Color(0xFF212121)
+    val TextSecondary = Color(0xFF757575)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampusInfoScreen(modifier: Modifier = Modifier) {
+fun CampusInfoScreen() {
+    val context = LocalContext.current
+
     val colleges = listOf(
         College(
             "College of Health and Allied Sciences",
@@ -91,142 +106,210 @@ fun CampusInfoScreen(modifier: Modifier = Modifier) {
         )
     )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
-                        MaterialTheme.colorScheme.surface
-                    )
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = CampusColors.BackgroundGray,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(
+                            "Campus Info",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            "${colleges.size} Colleges",
+                            fontSize = 12.sp,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            (context as? ComponentActivity)?.finish()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = CampusColors.PrimaryGreen,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 )
             )
-    ) {
-        // Header
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.primary,
-            tonalElevation = 4.dp
-        ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)
-            ) {
-                Text(
-                    text = "Campus Directory",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "${colleges.size} Colleges",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
-                )
-            }
         }
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
         ) {
-            items(colleges) { college ->
-                CollegeCard(college)
+            // Welcome section with gradient
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                CampusColors.PrimaryGreen,
+                                CampusColors.SecondaryGreen.copy(alpha = 0.8f)
+                            )
+                        )
+                    )
+                    .padding(24.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "Explore Our Colleges",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        fontSize = 22.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Connect with different departments and discover opportunities",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.9f),
+                        lineHeight = 20.sp
+                    )
+                }
+            }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(colleges) { college ->
+                    CollegeCard(college)
+                }
+
+                // Footer spacing
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollegeCard(college: College) {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth(),
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 2.dp,
-            pressedElevation = 8.dp
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp
         ),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+        colors = CardDefaults.cardColors(
+            containerColor = CampusColors.CardWhite
         )
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            // Image with gradient overlay
+            // Image section with overlay
             Box(
                 modifier = Modifier
-                    .size(72.dp)
+                    .fillMaxWidth()
+                    .height(180.dp)
             ) {
                 Image(
                     painter = painterResource(id = college.image),
                     contentDescription = college.name,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(12.dp)),
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
+
+                // Gradient overlay
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(12.dp))
                         .background(
                             Brush.verticalGradient(
                                 colors = listOf(
                                     Color.Transparent,
-                                    college.accentColor.copy(alpha = 0.3f)
+                                    Color.Black.copy(alpha = 0.7f)
                                 )
                             )
                         )
                 )
+
+                // College name overlay
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = college.accentColor.copy(alpha = 0.9f)
+                    ) {
+                        Text(
+                            text = college.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            lineHeight = 20.sp
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = college.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    lineHeight = 20.sp
-                )
-
-                if (college.contact.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
+            // Contact information section
+            if (college.contact.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(CampusColors.BackgroundGray.copy(alpha = 0.3f))
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Email icon
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(college.accentColor.copy(alpha = 0.12f)),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = college.accentColor.copy(alpha = 0.15f),
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = "Email",
-                                tint = college.accentColor,
-                                modifier = Modifier.padding(6.dp)
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Email",
+                            tint = college.accentColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
 
-                        Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(14.dp))
 
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Contact Email",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = CampusColors.TextSecondary,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 11.sp,
+                            letterSpacing = 0.5.sp
+                        )
+                        Spacer(modifier = Modifier.height(3.dp))
                         Text(
                             text = college.contact,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f)
+                            color = CampusColors.TextPrimary,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp
                         )
                     }
                 }
