@@ -56,6 +56,22 @@ class SettingScreen : ComponentActivity() {
                         SettingsItem(Icons.Default.Person, "Edit Profile")
                         Spacer(modifier = Modifier.height(8.dp))
                         SettingsItem(Icons.Default.School, "Academic Records")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SettingsItem(Icons.Default.Security, "Change Password")
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text("Notifications", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SettingsItem(Icons.Default.Notifications, "Push Notifications")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SettingsItem(Icons.Default.Email, "Email Announcements")
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text("Support & About", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SettingsItem(Icons.Default.Help, "Help Center")
                     }
                 }
             }
@@ -63,9 +79,11 @@ class SettingScreen : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsItem(icon: ImageVector, label: String) {
     Card(
+        onClick = { },
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
