@@ -72,6 +72,19 @@ class SettingScreen : ComponentActivity() {
                         Text("Support & About", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         Spacer(modifier = Modifier.height(8.dp))
                         SettingsItem(Icons.Default.Help, "Help Center")
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Button(
+                            onClick = { },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)),
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                        ) {
+                            Text("Logout", color = Color.White, fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }
