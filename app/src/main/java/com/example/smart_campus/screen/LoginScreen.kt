@@ -1,4 +1,4 @@
-package com.example.smart_campus
+package com.example.smart_campus.screen
 
 import android.content.Intent
 import android.os.Bundle
@@ -24,7 +24,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
+import com.example.smart_campus.R
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
