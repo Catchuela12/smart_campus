@@ -56,7 +56,7 @@
 
         <!-- Optional MainActivity (keep only if still used) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".screen.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
 

@@ -502,16 +502,7 @@ fun DrawerMenuItem(
                 modifier = Modifier.weight(1f)
             )
 
-            // Arrow indicator
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = null,
-                tint = if (isDestructive)
-                    AppColors.ErrorRed.copy(alpha = 0.5f)
-                else
-                    AppColors.TextSecondary.copy(alpha = 0.5f),
-                modifier = Modifier.size(20.dp)
-            )
+
         }
     }
 }
@@ -670,7 +661,6 @@ fun EnhancedActivityItem(
                     color = AppColors.TextSecondary
                 )
             }
-
 
         }
     }

@@ -6,4 +6,21 @@
     <string name="title_activity_setting_screen">SettingScreen</string>
     <string name="title_activity_profile_screen">ProfileScreen</string>
     <string name="title_activity_to_do_screen">ToDoScreen</string>
+    <string name="title_activity_task_list_screen">TaskListScreen</string>
+    <string name="title_activity_add_edit_task_screen">AddEditTaskScreen</string>
+    <string name="title_activity_task_item">TaskItem</string>
+    <string name="title_activity_announcements_screen">AnnouncementsScreen</string>
+    <string name="title_activity_announcement_item">AnnouncementItem</string>
+    <string name="title_activity_task_entity">TaskEntity</string>
+    <string name="title_activity_task_dao">TaskDao</string>
+    <string name="title_activity_task_repository">TaskRepository</string>
+    <string name="title_activity_announcement_entity">AnnouncementEntity</string>
+    <string name="title_activity_announcement_dao">AnnouncementDao</string>
+    <string name="title_activity_announcement_repository">AnnouncementRepository</string>
+    <string name="title_activity_task_view_model">TaskViewModel</string>
+    <string name="title_activity_announcement_view_model">AnnouncementViewModel</string>
+    <string name="title_activity_smart_campus_database">SmartCampusDatabase</string>
+    <string name="title_activity_nav_graph">NavGraph</string>
+    <string name="title_activity_date_utils">DateUtils</string>
+    <string name="title_activity_constants">Constants</string>
 </resources>
