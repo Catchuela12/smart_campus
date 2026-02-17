@@ -326,7 +326,9 @@ fun DashboardScreen(
                                     subtitle = "View classes",
                                     color = Color(0xFF1976D2),
                                     modifier = Modifier.weight(1f),
-                                    onClick = null
+                                    onClick = {
+                                        context.startActivity(Intent(context, ScheduleScreen::class.java))
+                                    }
                                 )
                                 EnhancedCard(
                                     icon = Icons.Default.CheckCircle,
@@ -352,7 +354,9 @@ fun DashboardScreen(
                                     subtitle = "View results",
                                     color = Color(0xFFF57C00),
                                     modifier = Modifier.weight(1f),
-                                    onClick = null
+                                    onClick = {
+                                        context.startActivity(Intent(context, GradeScreen::class.java))
+                                    }
                                 )
                                 EnhancedCard(
                                     icon = Icons.Default.Notifications,
@@ -360,7 +364,9 @@ fun DashboardScreen(
                                     subtitle = "5 new",
                                     color = Color(0xFF7B1FA2),
                                     modifier = Modifier.weight(1f),
-                                    onClick = null
+                                    onClick = {
+                                        context.startActivity(Intent(context, AnnouncementScreen::class.java))
+                                    }
                                 )
                             }
                         }
@@ -369,7 +375,7 @@ fun DashboardScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // Recent Activity Section
-                    SectionHeader(title = "Recent Activity")
+                    SectionHeader(title = "Others")
 
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -501,8 +507,6 @@ fun DrawerMenuItem(
                 fontSize = 15.sp,
                 modifier = Modifier.weight(1f)
             )
-
-
         }
     }
 }

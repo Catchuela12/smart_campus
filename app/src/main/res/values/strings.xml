@@ -23,4 +23,8 @@
     <string name="title_activity_nav_graph">NavGraph</string>
     <string name="title_activity_date_utils">DateUtils</string>
     <string name="title_activity_constants">Constants</string>
+    <string name="title_activity_schedule_screen">ScheduleScreen</string>
+    <string name="title_activity_announcement">Announcement</string>
+    <string name="title_activity_announcement_screen">AnnouncementScreen</string>
+    <string name="title_activity_grade_screen">GradeScreen</string>
 </resources>
