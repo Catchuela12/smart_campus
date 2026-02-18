@@ -95,3 +95,40 @@ fun getScheduleEntries(): List<ScheduleEntry> = listOf(
     ScheduleEntry("#804", "SUBJECT H", "Instructor H", "Lecture", "Room 7",
         dayIndex = 4, startSlot = 24, durationSlots = 3, color = ColorGreen), // Fri 6:00–7:30 PM
 )
+
+/** Total number of 30-minute slots from 6:00 AM to 10:00 PM = 32 slots */
+private const val TOTAL_SLOTS = 32
+
+/** Height in dp of each 30-minute row */
+private val SLOT_HEIGHT = 40.dp
+
+/** Width of the time-label column */
+private val TIME_COL_WIDTH = 110.dp
+
+/** Width of each day column */
+private val DAY_COL_WIDTH = 130.dp
+
+/**
+ * Converts a slot index to a human-readable time label.
+ * Slot 0 → "6:00 am", Slot 1 → "6:30 am", …
+ */
+fun slotToTimeLabel(slot: Int): String {
+    val totalMinutes = 6 * 60 + slot * 30
+    val hour24 = totalMinutes / 60
+    val minute = totalMinutes % 60
+    val amPm = if (hour24 < 12) "am" else "pm"
+    val hour12 = when {
+        hour24 == 0 -> 12
+        hour24 > 12 -> hour24 - 12
+        else -> hour24
+    }
+    val minuteStr = if (minute == 0) "00" else "30"
+    return "$hour12:$minuteStr $amPm"
+}
+
+/**
+ * Returns the display string for a time-range row header.
+ * e.g. slot 0 → "6:00 am - 6:30 am"
+ */
+fun slotToRangeLabel(slot: Int): String =
+    "${slotToTimeLabel(slot)} - ${slotToTimeLabel(slot + 1)}"
