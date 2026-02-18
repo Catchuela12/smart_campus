@@ -233,3 +233,101 @@ fun TimeCell(slot: Int) {
         )
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScheduleScreen() {
+    val entries = getScheduleEntries()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "My Schedule",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = TextDark
+                )
+            )
+        },
+        containerColor = Color.White
+    ) { paddingValues ->
+
+        val verticalScroll   = rememberScrollState()
+        val horizontalScroll = rememberScrollState()
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            // ── Horizontal scroll wrapper ────────────────────────────────────
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(horizontalScroll)
+            ) {
+                Column {
+                    // ── Header row ───────────────────────────────────────────
+                    Row {
+                        HeaderCell(text = "TIME",    width = TIME_COL_WIDTH)
+                        DAY_LABELS.forEach { day ->
+                            HeaderCell(text = day, width = DAY_COL_WIDTH)
+                        }
+                    }
+
+                    // ── Grid body (vertically scrollable) ────────────────────
+                    Box(
+                        modifier = Modifier.verticalScroll(verticalScroll)
+                    ) {
+                        // Background grid of empty cells
+                        Column {
+                            repeat(TOTAL_SLOTS) { slot ->
+                                Row {
+                                    TimeCell(slot)
+                                    repeat(7) { // 7 days
+                                        Box(
+                                            modifier = Modifier
+                                                .width(DAY_COL_WIDTH)
+                                                .height(SLOT_HEIGHT)
+                                                .background(Color.White)
+                                                .border(0.5.dp, BorderGray)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        // Overlay: class entry cards
+                        entries.forEach { entry ->
+                            val topOffset   = SLOT_HEIGHT * entry.startSlot
+                            val cardHeight  = SLOT_HEIGHT * entry.durationSlots
+                            val leftOffset  = TIME_COL_WIDTH + DAY_COL_WIDTH * entry.dayIndex
+
+                            ScheduleCard(
+                                entry = entry,
+                                modifier = Modifier
+                                    .absoluteOffset(x = leftOffset, y = topOffset)
+                                    .width(DAY_COL_WIDTH)
+                                    .height(cardHeight)
+                            )
+                        }
+                    }
+
+                    // ── Footer header row (mirrors top) ──────────────────────
+                    Row {
+                        HeaderCell(text = "TIME", width = TIME_COL_WIDTH)
+                        DAY_LABELS.forEach { day ->
+                            HeaderCell(text = day, width = DAY_COL_WIDTH)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
