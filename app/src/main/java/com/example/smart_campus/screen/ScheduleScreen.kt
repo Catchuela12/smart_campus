@@ -132,3 +132,104 @@ fun slotToTimeLabel(slot: Int): String {
  */
 fun slotToRangeLabel(slot: Int): String =
     "${slotToTimeLabel(slot)} - ${slotToTimeLabel(slot + 1)}"
+
+@Composable
+fun ScheduleCard(entry: ScheduleEntry, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .padding(1.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(entry.color)
+            .padding(horizontal = 6.dp, vertical = 4.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "Class ${entry.classNumber}",
+                color = TextWhite.copy(alpha = 0.85f),
+                fontSize = 9.sp,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = entry.subject,
+                color = TextWhite,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = entry.instructor,
+                color = TextWhite,
+                fontSize = 9.sp,
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = "(${entry.type}) ${entry.room}",
+                color = TextWhite.copy(alpha = 0.9f),
+                fontSize = 8.sp,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+/**
+ * Single header cell — used for both TIME column and day-name columns.
+ */
+@Composable
+fun HeaderCell(
+    text: String,
+    width: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .width(width)
+            .height(44.dp)
+            .background(HeaderGreen)
+            .border(0.5.dp, TextWhite.copy(alpha = 0.3f))
+    ) {
+        Text(
+            text = text,
+            color = TextWhite,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+/**
+ * Time label cell for one 30-minute row slot.
+ */
+@Composable
+fun TimeCell(slot: Int) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .width(TIME_COL_WIDTH)
+            .height(SLOT_HEIGHT)
+            .background(LightGray)
+            .border(0.5.dp, BorderGray)
+    ) {
+        Text(
+            text = slotToRangeLabel(slot),
+            color = TextDark.copy(alpha = 0.7f),
+            fontSize = 9.sp,
+            textAlign = TextAlign.Center,
+            lineHeight = 12.sp
+        )
+    }
+}
