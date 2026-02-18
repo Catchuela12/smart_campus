@@ -53,4 +53,45 @@ private val TextDark     = Color(0xFF212121)
 /** All 7 day labels */
 private val DAY_LABELS = listOf("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY")
 
+fun getScheduleEntries(): List<ScheduleEntry> = listOf(
 
+    // ── SUBJECT A ────────────────────────────────────────────────────────────
+    ScheduleEntry("#767", "SUBJECT A", "Instructor A", "Lecture", "Room 1",
+        dayIndex = 0, startSlot = 6, durationSlots = 3, color = ColorPink),   // Mon 9:00–10:30
+    ScheduleEntry("#767", "SUBJECT A", "Instructor A", "Laboratory", "Lab 1",
+        dayIndex = 3, startSlot = 2, durationSlots = 5, color = ColorPink),   // Thu 7:00–9:30
+
+    // ── SUBJECT B ────────────────────────────────────────────────────────────
+    ScheduleEntry("#765", "SUBJECT B", "Instructor B", "Lecture", "Room 2",
+        dayIndex = 0, startSlot = 11, durationSlots = 3, color = ColorNavy),  // Mon 11:30–1:00
+    ScheduleEntry("#765", "SUBJECT B", "Instructor B", "Lecture", "Room 2",
+        dayIndex = 3, startSlot = 11, durationSlots = 3, color = ColorNavy),  // Thu 11:30–1:00
+
+    // ── SUBJECT C ────────────────────────────────────────────────────────────
+    ScheduleEntry("#896", "SUBJECT C", "Instructor C", "Laboratory", "Lab 1",
+        dayIndex = 1, startSlot = 8, durationSlots = 3, color = ColorOrange), // Tue 10:00–11:30
+    ScheduleEntry("#896", "SUBJECT C", "Instructor C", "Lecture", "Room 3",
+        dayIndex = 4, startSlot = 10, durationSlots = 3, color = ColorOrange),// Fri 11:00–12:30
+
+    // ── SUBJECT D ────────────────────────────────────────────────────────────
+    ScheduleEntry("#877", "SUBJECT D", "Instructor D", "Lecture", "Room 2",
+        dayIndex = 1, startSlot = 14, durationSlots = 3, color = ColorTeal),  // Tue 1:00–2:30
+    ScheduleEntry("#877", "SUBJECT D", "Instructor D", "Lecture", "Room 2",
+        dayIndex = 4, startSlot = 14, durationSlots = 3, color = ColorTeal),  // Fri 1:00–2:30
+
+    // ── SUBJECT E ────────────────────────────────────────────────────────────
+    ScheduleEntry("#1069", "SUBJECT E", "Instructor E", "Lecture", "Room 4",
+        dayIndex = 4, startSlot = 2, durationSlots = 5, color = ColorPurple), // Fri 7:00–9:30
+
+    // ── SUBJECT F ────────────────────────────────────────────────────────────
+    ScheduleEntry("#832", "SUBJECT F", "Instructor F", "Lecture", "Room 5",
+        dayIndex = 6, startSlot = 2, durationSlots = 2, color = ColorRed),    // Sun 7:00–8:00
+
+    // ── SUBJECT G ────────────────────────────────────────────────────────────
+    ScheduleEntry("#1178", "SUBJECT G", "Instructor G", "Lecture", "Room 6",
+        dayIndex = 0, startSlot = 16, durationSlots = 2, color = ColorOlive),
+
+    // ── SUBJECT H ────────────────────────────────────────────────────────────
+    ScheduleEntry("#804", "SUBJECT H", "Instructor H", "Lecture", "Room 7",
+        dayIndex = 4, startSlot = 24, durationSlots = 3, color = ColorGreen), // Fri 6:00–7:30 PM
+)
