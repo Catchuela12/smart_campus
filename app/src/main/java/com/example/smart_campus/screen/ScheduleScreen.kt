@@ -7,11 +7,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -20,6 +24,39 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+// ── Color palette ────────────────────────────────────────────────────────────
+
+private val ColorPink    = Color(0xFFE91E8C)
+private val ColorPurple  = Color(0xFF7C3AED)
+private val ColorNavy    = Color(0xFF1E3A8A)
+private val ColorOrange  = Color(0xFFD97706)
+private val ColorTeal    = Color(0xFF0D9488)
+private val ColorOlive   = Color(0xFF65A30D)
+private val ColorRed     = Color(0xFFDC2626)
+private val ColorGreen   = Color(0xFF16A34A)
+
+// ── UI tokens ────────────────────────────────────────────────────────────────
+
+private val HeaderStart   = Color(0xFF1B4332)
+private val HeaderEnd     = Color(0xFF2D6A4F)
+private val BgScreen      = Color(0xFFF8FAFC)
+private val BgTimeCol     = Color(0xFFEFF6FF)
+private val BorderColor   = Color(0xFFE2E8F0)
+private val TimeTextColor = Color(0xFF64748B)
+private val TextWhite     = Color.White
+private val TextDark      = Color(0xFF0F172A)
+private val TopBarBg      = Color(0xFF1B4332)
+
+private val DAY_LABELS    = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
+
+// ── Dimensions ───────────────────────────────────────────────────────────────
+
+private val SLOT_HEIGHT    = 44.dp
+private val TIME_COL_WIDTH = 80.dp
+private val DAY_COL_WIDTH  = 120.dp
+private const val TOTAL_SLOTS = 32
+
+// ── Data model ───────────────────────────────────────────────────────────────
 
 data class ScheduleEntry(
     val classNumber: String,
@@ -33,139 +70,103 @@ data class ScheduleEntry(
     val color: Color
 )
 
-// Color palette — one distinct color per subject group
-private val ColorPink    = Color(0xFFD81B60)
-private val ColorPurple  = Color(0xFF6A1B9A)
-private val ColorNavy    = Color(0xFF1A237E)
-private val ColorOrange  = Color(0xFFBF8040)
-private val ColorTeal    = Color(0xFF00695C)
-private val ColorOlive   = Color(0xFF558B2F)
-private val ColorRed     = Color(0xFFC62828)
-private val ColorGreen   = Color(0xFF2E7D32)
-
-// Header / accent colors
-private val HeaderGreen  = Color(0xFF1B5E20)
-private val LightGray    = Color(0xFFF5F5F5)
-private val BorderGray   = Color(0xFFDDDDDD)
-private val TextWhite    = Color.White
-private val TextDark     = Color(0xFF212121)
-
-/** All 7 day labels */
-private val DAY_LABELS = listOf("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY")
+// ── Data source ──────────────────────────────────────────────────────────────
 
 fun getScheduleEntries(): List<ScheduleEntry> = listOf(
-
-    // ── SUBJECT A ────────────────────────────────────────────────────────────
-    ScheduleEntry("#767", "SUBJECT A", "Instructor A", "Lecture", "Room 1",
-        dayIndex = 0, startSlot = 6, durationSlots = 3, color = ColorPink),   // Mon 9:00–10:30
-    ScheduleEntry("#767", "SUBJECT A", "Instructor A", "Laboratory", "Lab 1",
-        dayIndex = 3, startSlot = 2, durationSlots = 5, color = ColorPink),   // Thu 7:00–9:30
-
-    // ── SUBJECT B ────────────────────────────────────────────────────────────
-    ScheduleEntry("#765", "SUBJECT B", "Instructor B", "Lecture", "Room 2",
-        dayIndex = 0, startSlot = 11, durationSlots = 3, color = ColorNavy),  // Mon 11:30–1:00
-    ScheduleEntry("#765", "SUBJECT B", "Instructor B", "Lecture", "Room 2",
-        dayIndex = 3, startSlot = 11, durationSlots = 3, color = ColorNavy),  // Thu 11:30–1:00
-
-    // ── SUBJECT C ────────────────────────────────────────────────────────────
-    ScheduleEntry("#896", "SUBJECT C", "Instructor C", "Laboratory", "Lab 1",
-        dayIndex = 1, startSlot = 8, durationSlots = 3, color = ColorOrange), // Tue 10:00–11:30
-    ScheduleEntry("#896", "SUBJECT C", "Instructor C", "Lecture", "Room 3",
-        dayIndex = 4, startSlot = 10, durationSlots = 3, color = ColorOrange),// Fri 11:00–12:30
-
-    // ── SUBJECT D ────────────────────────────────────────────────────────────
-    ScheduleEntry("#877", "SUBJECT D", "Instructor D", "Lecture", "Room 2",
-        dayIndex = 1, startSlot = 14, durationSlots = 3, color = ColorTeal),  // Tue 1:00–2:30
-    ScheduleEntry("#877", "SUBJECT D", "Instructor D", "Lecture", "Room 2",
-        dayIndex = 4, startSlot = 14, durationSlots = 3, color = ColorTeal),  // Fri 1:00–2:30
-
-    // ── SUBJECT E ────────────────────────────────────────────────────────────
-    ScheduleEntry("#1069", "SUBJECT E", "Instructor E", "Lecture", "Room 4",
-        dayIndex = 4, startSlot = 2, durationSlots = 5, color = ColorPurple), // Fri 7:00–9:30
-
-    // ── SUBJECT F ────────────────────────────────────────────────────────────
-    ScheduleEntry("#832", "SUBJECT F", "Instructor F", "Lecture", "Room 5",
-        dayIndex = 6, startSlot = 2, durationSlots = 2, color = ColorRed),    // Sun 7:00–8:00
-
-    // ── SUBJECT G ────────────────────────────────────────────────────────────
-    ScheduleEntry("#1178", "SUBJECT G", "Instructor G", "Lecture", "Room 6",
-        dayIndex = 0, startSlot = 16, durationSlots = 2, color = ColorOlive),
-
-    // ── SUBJECT H ────────────────────────────────────────────────────────────
-    ScheduleEntry("#804", "SUBJECT H", "Instructor H", "Lecture", "Room 7",
-        dayIndex = 4, startSlot = 24, durationSlots = 3, color = ColorGreen), // Fri 6:00–7:30 PM
+    ScheduleEntry("#767",  "SUBJECT A", "Instructor A", "Lecture",    "Room 1", 0, 6,  3, ColorPink),
+    ScheduleEntry("#767",  "SUBJECT A", "Instructor A", "Laboratory", "Lab 1",  3, 2,  5, ColorPink),
+    ScheduleEntry("#765",  "SUBJECT B", "Instructor B", "Lecture",    "Room 2", 0, 11, 3, ColorNavy),
+    ScheduleEntry("#765",  "SUBJECT B", "Instructor B", "Lecture",    "Room 2", 3, 11, 3, ColorNavy),
+    ScheduleEntry("#896",  "SUBJECT C", "Instructor C", "Laboratory", "Lab 1",  1, 8,  3, ColorOrange),
+    ScheduleEntry("#896",  "SUBJECT C", "Instructor C", "Lecture",    "Room 3", 4, 10, 3, ColorOrange),
+    ScheduleEntry("#877",  "SUBJECT D", "Instructor D", "Lecture",    "Room 2", 1, 14, 3, ColorTeal),
+    ScheduleEntry("#877",  "SUBJECT D", "Instructor D", "Lecture",    "Room 2", 4, 14, 3, ColorTeal),
+    ScheduleEntry("#1069", "SUBJECT E", "Instructor E", "Lecture",    "Room 4", 4, 2,  5, ColorPurple),
+    ScheduleEntry("#832",  "SUBJECT F", "Instructor F", "Lecture",    "Room 5", 6, 2,  2, ColorRed),
+    ScheduleEntry("#1178", "SUBJECT G", "Instructor G", "Lecture",    "Room 6", 0, 16, 2, ColorOlive),
+    ScheduleEntry("#804",  "SUBJECT H", "Instructor H", "Lecture",    "Room 7", 4, 24, 3, ColorGreen),
 )
 
-/** Total number of 30-minute slots from 6:00 AM to 10:00 PM = 32 slots */
-private const val TOTAL_SLOTS = 32
+// ── Time helpers ─────────────────────────────────────────────────────────────
 
-/** Height in dp of each 30-minute row */
-private val SLOT_HEIGHT = 40.dp
-
-/** Width of the time-label column */
-private val TIME_COL_WIDTH = 110.dp
-
-/** Width of each day column */
-private val DAY_COL_WIDTH = 130.dp
-
-/**
- * Converts a slot index to a human-readable time label.
- * Slot 0 → "6:00 am", Slot 1 → "6:30 am", …
- */
 fun slotToTimeLabel(slot: Int): String {
     val totalMinutes = 6 * 60 + slot * 30
     val hour24 = totalMinutes / 60
     val minute = totalMinutes % 60
     val amPm = if (hour24 < 12) "am" else "pm"
     val hour12 = when {
-        hour24 == 0 -> 12
-        hour24 > 12 -> hour24 - 12
-        else -> hour24
+        hour24 == 0  -> 12
+        hour24 > 12  -> hour24 - 12
+        else         -> hour24
     }
     val minuteStr = if (minute == 0) "00" else "30"
     return "$hour12:$minuteStr $amPm"
 }
 
-/**
- * Returns the display string for a time-range row header.
- * e.g. slot 0 → "6:00 am - 6:30 am"
- */
 fun slotToRangeLabel(slot: Int): String =
-    "${slotToTimeLabel(slot)} - ${slotToTimeLabel(slot + 1)}"
+    "${slotToTimeLabel(slot)}\n${slotToTimeLabel(slot + 1)}"
+
+// ── ScheduleCard ─────────────────────────────────────────────────────────────
 
 @Composable
 fun ScheduleCard(entry: ScheduleEntry, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .padding(1.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(entry.color)
-            .padding(horizontal = 6.dp, vertical = 4.dp)
+            .padding(2.dp)
+            .shadow(elevation = 3.dp, shape = RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(10.dp))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(entry.color, entry.color.copy(alpha = 0.82f))
+                )
+            )
+            .padding(horizontal = 6.dp, vertical = 6.dp)
     ) {
+        // Left accent bar
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .width(3.dp)
+                .fillMaxHeight(0.75f)
+                .clip(RoundedCornerShape(2.dp))
+                .background(TextWhite.copy(alpha = 0.45f))
+        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 6.dp)
         ) {
-            Text(
-                text = "Class ${entry.classNumber}",
-                color = TextWhite.copy(alpha = 0.85f),
-                fontSize = 9.sp,
-                textAlign = TextAlign.Center
-            )
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(TextWhite.copy(alpha = 0.2f))
+                    .padding(horizontal = 5.dp, vertical = 1.dp)
+            ) {
+                Text(
+                    text = "Class ${entry.classNumber}",
+                    color = TextWhite,
+                    fontSize = 8.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Spacer(Modifier.height(3.dp))
             Text(
                 text = entry.subject,
                 color = TextWhite,
                 fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                letterSpacing = 0.3.sp
             )
             Spacer(Modifier.height(2.dp))
             Text(
                 text = entry.instructor,
-                color = TextWhite,
+                color = TextWhite.copy(alpha = 0.9f),
                 fontSize = 9.sp,
                 fontStyle = FontStyle.Italic,
                 textAlign = TextAlign.Center,
@@ -173,8 +174,8 @@ fun ScheduleCard(entry: ScheduleEntry, modifier: Modifier = Modifier) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "(${entry.type}) ${entry.room}",
-                color = TextWhite.copy(alpha = 0.9f),
+                text = "(${entry.type})  ${entry.room}",
+                color = TextWhite.copy(alpha = 0.8f),
                 fontSize = 8.sp,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -184,36 +185,35 @@ fun ScheduleCard(entry: ScheduleEntry, modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * Single header cell — used for both TIME column and day-name columns.
- */
+// ── HeaderCell ───────────────────────────────────────────────────────────────
+
 @Composable
-fun HeaderCell(
-    text: String,
-    width: androidx.compose.ui.unit.Dp,
-    modifier: Modifier = Modifier
-) {
+fun HeaderCell(text: String, width: androidx.compose.ui.unit.Dp) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
+        modifier = Modifier
             .width(width)
-            .height(44.dp)
-            .background(HeaderGreen)
-            .border(0.5.dp, TextWhite.copy(alpha = 0.3f))
+            .height(48.dp)
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(HeaderStart, HeaderEnd)
+                )
+            )
+            .border(0.5.dp, TextWhite.copy(alpha = 0.15f))
     ) {
         Text(
             text = text,
             color = TextWhite,
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            letterSpacing = 1.sp
         )
     }
 }
 
-/**
- * Time label cell for one 30-minute row slot.
- */
+// ── TimeCell ─────────────────────────────────────────────────────────────────
+
 @Composable
 fun TimeCell(slot: Int) {
     Box(
@@ -221,22 +221,25 @@ fun TimeCell(slot: Int) {
         modifier = Modifier
             .width(TIME_COL_WIDTH)
             .height(SLOT_HEIGHT)
-            .background(LightGray)
-            .border(0.5.dp, BorderGray)
+            .background(BgTimeCol)
+            .border(0.5.dp, BorderColor)
+            .padding(horizontal = 4.dp)
     ) {
         Text(
             text = slotToRangeLabel(slot),
-            color = TextDark.copy(alpha = 0.7f),
-            fontSize = 9.sp,
+            color = TimeTextColor,
+            fontSize = 8.sp,
             textAlign = TextAlign.Center,
-            lineHeight = 12.sp
+            lineHeight = 11.sp
         )
     }
 }
 
+// ── ScheduleScreen ───────────────────────────────────────────────────────────
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreen() {
+fun ScheduleScreen(onBack: () -> Unit = {}) {
     val entries = getScheduleEntries()
 
     Scaffold(
@@ -246,16 +249,27 @@ fun ScheduleScreen() {
                     Text(
                         text = "My Schedule",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = TextWhite
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = TextWhite
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = TextDark
+                    containerColor = TopBarBg,
+                    titleContentColor = TextWhite,
+                    navigationIconContentColor = TextWhite
                 )
             )
         },
-        containerColor = Color.White
+        containerColor = BgScreen
     ) { paddingValues ->
 
         val verticalScroll   = rememberScrollState()
@@ -266,48 +280,47 @@ fun ScheduleScreen() {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // ── Horizontal scroll wrapper ────────────────────────────────────
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(horizontalScroll)
             ) {
                 Column {
-                    // ── Header row ───────────────────────────────────────────
+                    // Header row
                     Row {
-                        HeaderCell(text = "TIME",    width = TIME_COL_WIDTH)
-                        DAY_LABELS.forEach { day ->
-                            HeaderCell(text = day, width = DAY_COL_WIDTH)
-                        }
+                        HeaderCell(text = "TIME", width = TIME_COL_WIDTH)
+                        DAY_LABELS.forEach { day -> HeaderCell(text = day, width = DAY_COL_WIDTH) }
                     }
 
-                    // ── Grid body (vertically scrollable) ────────────────────
-                    Box(
-                        modifier = Modifier.verticalScroll(verticalScroll)
-                    ) {
-                        // Background grid of empty cells
+                    // Grid body
+                    Box(modifier = Modifier.verticalScroll(verticalScroll)) {
+
+                        // Background grid
                         Column {
                             repeat(TOTAL_SLOTS) { slot ->
                                 Row {
                                     TimeCell(slot)
-                                    repeat(7) { // 7 days
+                                    repeat(7) {
                                         Box(
                                             modifier = Modifier
                                                 .width(DAY_COL_WIDTH)
                                                 .height(SLOT_HEIGHT)
-                                                .background(Color.White)
-                                                .border(0.5.dp, BorderGray)
+                                                .background(
+                                                    if (slot % 2 == 0) Color.White
+                                                    else Color(0xFFFAFAFA)
+                                                )
+                                                .border(0.5.dp, BorderColor)
                                         )
                                     }
                                 }
                             }
                         }
 
-                        // Overlay: class entry cards
+                        // Class cards overlay
                         entries.forEach { entry ->
-                            val topOffset   = SLOT_HEIGHT * entry.startSlot
-                            val cardHeight  = SLOT_HEIGHT * entry.durationSlots
-                            val leftOffset  = TIME_COL_WIDTH + DAY_COL_WIDTH * entry.dayIndex
+                            val topOffset  = SLOT_HEIGHT * entry.startSlot
+                            val cardHeight = SLOT_HEIGHT * entry.durationSlots
+                            val leftOffset = TIME_COL_WIDTH + DAY_COL_WIDTH * entry.dayIndex
 
                             ScheduleCard(
                                 entry = entry,
@@ -319,12 +332,10 @@ fun ScheduleScreen() {
                         }
                     }
 
-                    // ── Footer header row (mirrors top) ──────────────────────
+                    // Footer header row
                     Row {
                         HeaderCell(text = "TIME", width = TIME_COL_WIDTH)
-                        DAY_LABELS.forEach { day ->
-                            HeaderCell(text = day, width = DAY_COL_WIDTH)
-                        }
+                        DAY_LABELS.forEach { day -> HeaderCell(text = day, width = DAY_COL_WIDTH) }
                     }
                 }
             }
