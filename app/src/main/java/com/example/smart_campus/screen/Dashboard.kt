@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,6 +29,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.smart_campus.ui.theme.Smart_campusTheme
 import kotlinx.coroutines.launch
 
@@ -37,10 +42,19 @@ class Dashboard : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Smart_campusTheme {
-                DashboardScreen(
-                    name = "JohnEric L. Catchuela",
-                    studentNum = "2300432"
-                )
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "dashboard") {
+                    composable("dashboard") {
+                        DashboardScreen(
+                            name = "JohnEric L. Cachuella",
+                            studentNum = "2300432",
+                            navController = navController
+                        )
+                    }
+                    composable("todo") {
+                        ToDoScreen()
+                    }
+                }
             }
         }
     }
@@ -64,8 +78,9 @@ object AppColors {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    name: String = "JohnEric L. Catchuela",
-    studentNum: String = "2300432"
+    name: String = "JohnEric L. Cachuella",
+    studentNum: String = "2300432",
+    navController: NavController
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -207,7 +222,7 @@ fun DashboardScreen(
 
                 // Logout button with distinct styling
                 DrawerMenuItem(
-                    icon = Icons.Default.ExitToApp,
+                    icon = Icons.AutoMirrored.Filled.ExitToApp,
                     label = "Logout",
                     onClick = { showLogoutDialog = true },
                     isDestructive = true
@@ -245,8 +260,12 @@ fun DashboardScreen(
                     },
                     actions = {
                         IconButton(onClick = { /* Notifications */ }) {
-                            Badge(
-                                containerColor = AppColors.ErrorRed
+                            BadgedBox(
+                                badge = {
+                                    Badge {
+                                        Text("5")
+                                    }
+                                }
                             ) {
                                 Icon(
                                     Icons.Default.Notifications,
@@ -337,7 +356,7 @@ fun DashboardScreen(
                                     color = Color(0xFFFF8F00),
                                     modifier = Modifier.weight(1f),
                                     onClick = {
-                                        context.startActivity(Intent(context, ToDoScreen::class.java))
+                                        navController.navigate("todo")
                                     }
                                 )
                             }
@@ -378,7 +397,7 @@ fun DashboardScreen(
                     EnhancedActivityItem(
                         title = "Mobile Programming Class",
                         subtitle = "Today at 10:00 AM",
-                        icon = Icons.Default.List,
+                        icon = Icons.AutoMirrored.Filled.List,
                         iconColor = Color(0xFF1976D2)
                     )
 
@@ -408,7 +427,7 @@ fun DashboardScreen(
             onDismissRequest = { showLogoutDialog = false },
             icon = {
                 Icon(
-                    Icons.Default.ExitToApp,
+                    Icons.AutoMirrored.Filled.ExitToApp,
                     contentDescription = null,
                     tint = AppColors.ErrorRed,
                     modifier = Modifier.size(48.dp)
