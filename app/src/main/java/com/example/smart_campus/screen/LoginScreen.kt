@@ -1,4 +1,4 @@
-package com.example.smart_campus
+package com.example.smart_campus.screen
 
 import android.content.Intent
 import android.os.Bundle
@@ -24,7 +24,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -35,7 +34,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.smart_campus.ui.theme.Smart_campusTheme
+import com.example.smart_campus.R
 
 class LoginScreen : ComponentActivity() {
 
@@ -44,7 +43,7 @@ class LoginScreen : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            Smart_campusTheme {
+            _root_ide_package_.com.example.smart_campus.ui.theme.Smart_campusTheme {
                 LoginUI { username ->
                     Toast.makeText(
                         this,

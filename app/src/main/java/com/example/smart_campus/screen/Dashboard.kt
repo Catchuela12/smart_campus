@@ -1,4 +1,4 @@
-package com.example.smart_campus
+package com.example.smart_campus.screen
 
 import android.content.Intent
 import android.os.Bundle
@@ -325,15 +325,20 @@ fun DashboardScreen(
                                     title = "Schedule",
                                     subtitle = "View classes",
                                     color = Color(0xFF1976D2),
-                                    modifier = Modifier.weight(1f)
-
+                                    modifier = Modifier.weight(1f),
+                                    onClick = {
+                                        context.startActivity(Intent(context, ScheduleScreen::class.java))
+                                    }
                                 )
                                 EnhancedCard(
-                                    icon = Icons.Default.Person,
-                                    title = "Attendance",
-                                    subtitle = "Check status",
-                                    color = Color(0xFFD32F2F),
-                                    modifier = Modifier.weight(1f)
+                                    icon = Icons.Default.CheckCircle,
+                                    title = "To-Do List",
+                                    subtitle = "Manage tasks",
+                                    color = Color(0xFFFF8F00),
+                                    modifier = Modifier.weight(1f),
+                                    onClick = {
+                                        context.startActivity(Intent(context, ToDoScreen::class.java))
+                                    }
                                 )
                             }
 
@@ -348,15 +353,16 @@ fun DashboardScreen(
                                     title = "Grades",
                                     subtitle = "View results",
                                     color = Color(0xFFF57C00),
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
+                                    onClick = null
                                 )
                                 EnhancedCard(
                                     icon = Icons.Default.Notifications,
                                     title = "Announcements",
                                     subtitle = "5 new",
                                     color = Color(0xFF7B1FA2),
-                                    modifier = Modifier.weight(1f)
-
+                                    modifier = Modifier.weight(1f),
+                                    onClick = null
                                 )
                             }
                         }
@@ -365,7 +371,7 @@ fun DashboardScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // Recent Activity Section
-                    SectionHeader(title = "Recent Activity")
+                    SectionHeader(title = "Others")
 
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -497,17 +503,6 @@ fun DrawerMenuItem(
                 fontSize = 15.sp,
                 modifier = Modifier.weight(1f)
             )
-
-            // Arrow indicator
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = null,
-                tint = if (isDestructive)
-                    AppColors.ErrorRed.copy(alpha = 0.5f)
-                else
-                    AppColors.TextSecondary.copy(alpha = 0.5f),
-                modifier = Modifier.size(20.dp)
-            )
         }
     }
 }
@@ -544,7 +539,8 @@ fun EnhancedCard(
     title: String,
     subtitle: String,
     color: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null
 ) {
     var pressed by remember { mutableStateOf(false) }
 
@@ -559,6 +555,7 @@ fun EnhancedCard(
         shape = RoundedCornerShape(16.dp),
         onClick = {
             pressed = !pressed
+            onClick?.invoke()
         }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -665,12 +662,6 @@ fun EnhancedActivityItem(
                 )
             }
 
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = null,
-                tint = AppColors.TextSecondary,
-                modifier = Modifier.size(24.dp)
-            )
         }
     }
 }
