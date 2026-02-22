@@ -362,7 +362,9 @@ fun DashboardScreen(
                                     subtitle = "5 new",
                                     color = Color(0xFF7B1FA2),
                                     modifier = Modifier.weight(1f),
-                                    onClick = null
+                                    onClick = {
+                                        context.startActivity(Intent(context, AnnouncementScreen::class.java))
+                                    }
                                 )
                             }
                         }
