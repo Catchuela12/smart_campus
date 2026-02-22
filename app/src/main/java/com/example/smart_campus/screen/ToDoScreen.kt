@@ -1,6 +1,10 @@
 package com.example.smart_campus.screen
 
 import android.app.Application
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,18 +37,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smart_campus.data.Task
+import com.example.smart_campus.ui.theme.Smart_campusTheme
 import com.example.smart_campus.viewmodel.TaskViewModel
 import com.example.smart_campus.viewmodel.TaskViewModelFactory
 
+// Activity wrapper
+class ToDoScreen : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            Smart_campusTheme {
+                ToDoScreenContent(
+                    onBack = { finish() }
+                )
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToDoScreen(modifier: Modifier = Modifier) {
+fun ToDoScreenContent(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {}
+) {
     val context = LocalContext.current
     val taskViewModel: TaskViewModel = viewModel(
         factory = TaskViewModelFactory(context.applicationContext as Application)
@@ -53,12 +80,35 @@ fun ToDoScreen(modifier: Modifier = Modifier) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("To-Do List") }
+                title = {
+                    Text(
+                        "To-Do List",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF1B5E20),
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Task")
+            FloatingActionButton(
+                onClick = { showDialog = true },
+                containerColor = Color(0xFF1B5E20)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Task", tint = Color.White)
             }
         }
     ) { innerPadding ->
@@ -81,7 +131,7 @@ fun ToDoScreen(modifier: Modifier = Modifier) {
                         Task(
                             title = title,
                             description = description,
-                            dueDate = System.currentTimeMillis() // Using current time as a placeholder
+                            dueDate = System.currentTimeMillis()
                         )
                     )
                     showDialog = false
@@ -167,7 +217,7 @@ fun TaskItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = task.title)
+                Text(text = task.title, fontWeight = FontWeight.Bold)
                 Text(text = task.description)
             }
             IconButton(onClick = onDelete) {
@@ -177,9 +227,10 @@ fun TaskItem(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun ToDoScreenPreview() {
-    ToDoScreen()
+    Smart_campusTheme {
+        ToDoScreenContent()
+    }
 }
