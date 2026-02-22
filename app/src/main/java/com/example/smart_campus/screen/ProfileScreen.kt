@@ -1,4 +1,4 @@
-package com.example.smart_campus
+package com.example.smart_campus.screen
 
 import android.os.Bundle
 import android.widget.Toast

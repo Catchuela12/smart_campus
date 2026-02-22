@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
@@ -12,38 +11,53 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Smart_campus">
         <activity
-            android:name=".ProfileScreen"
+            android:name=".screen.GradeScreen"
             android:exported="false"
-            android:label="@string/title_activity_profile_screen"
+            android:label="@string/title_activity_grade_screen"
             android:theme="@style/Theme.Smart_campus" />
         <activity
-            android:name=".SettingScreen"
+            android:name=".screen.AnnouncementScreen"
             android:exported="false"
-            android:label="@string/title_activity_setting_screen"
+            android:label="@string/title_activity_announcement_screen"
             android:theme="@style/Theme.Smart_campus" />
         <activity
-            android:name=".CampusInfo"
+            android:name=".screen.ScheduleScreen"
             android:exported="false"
-            android:label="@string/title_activity_campus_info"
-            android:theme="@style/Theme.Smart_campus" />
-        <activity
-            android:name=".Dashboard"
-            android:exported="false"
-            android:label="@string/title_activity_dashboard"
+            android:label="@string/title_activity_schedule_screen"
             android:theme="@style/Theme.Smart_campus" /> <!-- Login Screen (Launcher) -->
         <activity
-            android:name=".LoginScreen"
+            android:name=".screen.LoginScreen"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Smart_campus">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Main Screen (Placeholder for teammates) -->
+        </activity> <!-- Dashboard -->
         <activity
-            android:name=".MainActivity"
+            android:name=".screen.Dashboard"
+            android:exported="false"
+            android:theme="@style/Theme.Smart_campus" /> <!-- Campus Info -->
+        <activity
+            android:name=".screen.CampusInfo"
+            android:exported="false"
+            android:theme="@style/Theme.Smart_campus" /> <!-- Profile -->
+        <activity
+            android:name=".screen.ProfileScreen"
+            android:exported="false"
+            android:theme="@style/Theme.Smart_campus" /> <!-- Settings -->
+        <activity
+            android:name=".screen.SettingScreen"
+            android:exported="false"
+            android:theme="@style/Theme.Smart_campus" />
+        <activity
+            android:name=".screen.ToDoScreen"
+            android:exported="false"
+            android:theme="@style/Theme.Smart_campus" /> <!-- Phase 2: Task Manager -->
+        <!-- Optional MainActivity (keep only if still used) -->
+        <activity
+            android:name=".screen.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
     </application>
