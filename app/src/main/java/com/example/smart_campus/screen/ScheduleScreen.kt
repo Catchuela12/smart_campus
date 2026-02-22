@@ -1,5 +1,9 @@
 package com.example.smart_campus.screen
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -23,6 +27,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.smart_campus.ui.theme.Smart_campusTheme
+
+class ScheduleScreen : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            Smart_campusTheme {
+                ScheduleScreenContent(
+                    onBack = { finish() }
+                )
+            }
+        }
+    }
+}
 
 // ── Color palette ────────────────────────────────────────────────────────────
 
@@ -235,11 +254,11 @@ fun TimeCell(slot: Int) {
     }
 }
 
-// ── ScheduleScreen ───────────────────────────────────────────────────────────
+// ── ScheduleScreenContent ────────────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreen(onBack: () -> Unit = {}) {
+fun ScheduleScreenContent(onBack: () -> Unit = {}) {
     val entries = getScheduleEntries()
 
     Scaffold(

@@ -354,9 +354,7 @@ fun DashboardScreen(
                                     subtitle = "View results",
                                     color = Color(0xFFF57C00),
                                     modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        context.startActivity(Intent(context, GradeScreen::class.java))
-                                    }
+                                    onClick = null
                                 )
                                 EnhancedCard(
                                     icon = Icons.Default.Notifications,
@@ -364,9 +362,7 @@ fun DashboardScreen(
                                     subtitle = "5 new",
                                     color = Color(0xFF7B1FA2),
                                     modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        context.startActivity(Intent(context, AnnouncementScreen::class.java))
-                                    }
+                                    onClick = null
                                 )
                             }
                         }
