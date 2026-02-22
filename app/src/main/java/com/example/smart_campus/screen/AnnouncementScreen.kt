@@ -90,7 +90,7 @@ fun AnnouncementScreenContent() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Campus Announcements") },
+                title = { Text("Announcements") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = AppColors.PrimaryGreen,
                     titleContentColor = Color.White,
