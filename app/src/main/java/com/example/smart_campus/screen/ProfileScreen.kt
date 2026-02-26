@@ -32,9 +32,25 @@ class ProfileScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Receive user data from Intent
+        val userId = intent.getIntExtra("USER_ID", 0)
+        val studentId = intent.getStringExtra("STUDENT_ID") ?: "N/A"
+        val fullName = intent.getStringExtra("FULL_NAME") ?: "Student"
+        val email = intent.getStringExtra("EMAIL") ?: "No email"
+        val program = intent.getStringExtra("PROGRAM") ?: "No program"
+        val yearLevel = intent.getStringExtra("YEAR_LEVEL") ?: "N/A"
+
         setContent {
             Smart_campusTheme {
-                ProfileView()
+                ProfileView(
+                    userId = userId,
+                    userName = fullName,
+                    userEmail = email,
+                    studentId = studentId,
+                    program = program,
+                    yearLevel = yearLevel
+                )
             }
         }
     }
@@ -55,16 +71,19 @@ object ProfileColors {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileView() {
+fun ProfileView(
+    userId: Int = 0,
+    userName: String = "Student",
+    userEmail: String = "No email",
+    studentId: String = "N/A",
+    program: String = "No program",
+    yearLevel: String = "N/A"
+) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
     var showDialog by remember { mutableStateOf(false) }
-    var userName by remember { mutableStateOf("JohnEric L. Catchuela") }
-    var userEmail by remember { mutableStateOf("johneric.catchuela@smartcampus.edu") }
-    var studentId by remember { mutableStateOf("2300432") }
-    var program by remember { mutableStateOf("BS Information Technology") }
-    var yearLevel by remember { mutableStateOf("3rd Year") }
+    var displayName by remember { mutableStateOf(userName) }
     var textFieldValue by remember { mutableStateOf(userName) }
 
     if (showDialog) {
@@ -99,6 +118,8 @@ fun ProfileView() {
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
                             focusedBorderColor = ProfileColors.PrimaryGreen,
                             unfocusedBorderColor = ProfileColors.TextSecondary.copy(alpha = 0.3f),
                             cursorColor = ProfileColors.PrimaryGreen
@@ -109,9 +130,9 @@ fun ProfileView() {
             confirmButton = {
                 Button(
                     onClick = {
-                        userName = textFieldValue
+                        displayName = textFieldValue
                         showDialog = false
-                        Toast.makeText(context, "Profile updated successfully!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Display name updated! (Not saved to database)", Toast.LENGTH_SHORT).show()
                     },
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -221,7 +242,7 @@ fun ProfileView() {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        userName,
+                        displayName,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
@@ -282,10 +303,10 @@ fun ProfileView() {
                 InfoActionCard(
                     icon = Icons.Outlined.Badge,
                     label = "Display Name",
-                    value = userName,
+                    value = displayName,
                     iconColor = ProfileColors.PrimaryGreen,
                     onClick = {
-                        textFieldValue = userName
+                        textFieldValue = displayName
                         showDialog = true
                     }
                 )
@@ -352,7 +373,7 @@ fun ProfileView() {
 
             // Footer
             Text(
-                "Smart Campus v1.0.4",
+                "Smart Campus v1.0.5",
                 fontSize = 12.sp,
                 color = ProfileColors.TextSecondary.copy(alpha = 0.5f),
                 modifier = Modifier.padding(bottom = 24.dp)

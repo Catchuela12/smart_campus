@@ -29,10 +29,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smart_campus.screen.Announcement_data.AnnouncementAppDataBase
+import com.example.smart_campus.screen.Announcement_data.AnnouncementRepository
+import com.example.smart_campus.screen.Announcement_viewmodel.AnnouncementViewModel
 import com.example.smart_campus.ui.theme.Smart_campusTheme
 import kotlinx.coroutines.launch
 
@@ -40,21 +42,25 @@ class Dashboard : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Receive user data from Intent (sent by LoginScreen)
+        val userId = intent.getIntExtra("USER_ID", 0)
+        val studentId = intent.getStringExtra("STUDENT_ID") ?: "N/A"
+        val fullName = intent.getStringExtra("FULL_NAME") ?: "Student"
+        val email = intent.getStringExtra("EMAIL") ?: ""
+        val program = intent.getStringExtra("PROGRAM") ?: ""
+        val yearLevel = intent.getStringExtra("YEAR_LEVEL") ?: ""
+
         setContent {
             Smart_campusTheme {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "dashboard") {
-                    composable("dashboard") {
-                        DashboardScreen(
-                            name = "JohnEric L. Cachuella",
-                            studentNum = "2300432",
-                            navController = navController
-                        )
-                    }
-                    composable("todo") {
-                        ToDoScreen()
-                    }
-                }
+                DashboardScreen(
+                    userId = userId,
+                    name = fullName,
+                    studentNum = studentId,
+                    email = email,
+                    program = program,
+                    yearLevel = yearLevel
+                )
             }
         }
     }
@@ -78,14 +84,35 @@ object AppColors {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    name: String = "JohnEric L. Cachuella",
-    studentNum: String = "2300432",
-    navController: NavController
+    userId: Int = 0,
+    name: String = "Student",
+    studentNum: String = "N/A",
+    email: String = "",
+    program: String = "",
+    yearLevel: String = ""
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var showLogoutDialog by remember { mutableStateOf(false) }
+
+    // ✅ Get announcements ViewModel for notification count
+    val announcementViewModel: AnnouncementViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(AnnouncementViewModel::class.java)) {
+                    val repository = AnnouncementRepository(
+                        AnnouncementAppDataBase.getDatabase(context.applicationContext).announcementDao()
+                    )
+                    @Suppress("UNCHECKED_CAST")
+                    return AnnouncementViewModel(repository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    )
+    val announcements by announcementViewModel.allAnnouncements.collectAsState()
+    val unreadCount = announcements.count { !it.isRead }
 
     // Animation for cards
     var cardsVisible by remember { mutableStateOf(false) }
@@ -182,13 +209,21 @@ fun DashboardScreen(
                     letterSpacing = 1.2.sp
                 )
 
-                // Menu items
+                // Menu items - Pass user data to other screens
                 DrawerMenuItem(
                     icon = Icons.Default.Person,
                     label = "Profile",
                     onClick = {
                         scope.launch { drawerState.close() }
-                        context.startActivity(Intent(context, ProfileScreen::class.java))
+                        val intent = Intent(context, ProfileScreen::class.java).apply {
+                            putExtra("USER_ID", userId)
+                            putExtra("STUDENT_ID", studentNum)
+                            putExtra("FULL_NAME", name)
+                            putExtra("EMAIL", email)
+                            putExtra("PROGRAM", program)
+                            putExtra("YEAR_LEVEL", yearLevel)
+                        }
+                        context.startActivity(intent)
                     }
                 )
 
@@ -259,14 +294,34 @@ fun DashboardScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { /* Notifications */ }) {
-                            BadgedBox(
-                                badge = {
-                                    Badge {
-                                        Text("5")
+                        // ✅ Functional notification bell with dynamic count
+                        IconButton(
+                            onClick = {
+                                context.startActivity(Intent(context, AnnouncementScreen::class.java))
+                            }
+                        ) {
+                            if (unreadCount > 0) {
+                                BadgedBox(
+                                    badge = {
+                                        Badge(
+                                            containerColor = Color(0xFFFF5252),
+                                            contentColor = Color.White
+                                        ) {
+                                            Text(
+                                                unreadCount.toString(),
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
                                     }
+                                ) {
+                                    Icon(
+                                        Icons.Default.Notifications,
+                                        contentDescription = "Notifications",
+                                        tint = Color.White
+                                    )
                                 }
-                            ) {
+                            } else {
                                 Icon(
                                     Icons.Default.Notifications,
                                     contentDescription = "Notifications",
@@ -285,7 +340,7 @@ fun DashboardScreen(
                     .background(AppColors.BackgroundGray)
                     .verticalScroll(rememberScrollState())
             ) {
-                // Welcome Section with gradient
+                // Welcome Section with gradient - Shows FULL first name
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -308,7 +363,10 @@ fun DashboardScreen(
 
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = name.split(" ").firstOrNull() ?: name,
+                            text = name.substringBeforeLast(" ", name),
+                            // ✅ Shows full first name
+                            // "John Eric Doe" → "John Eric"
+                            // "Maria Santos" → "Maria"
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -380,7 +438,8 @@ fun DashboardScreen(
                                 EnhancedCard(
                                     icon = Icons.Default.Notifications,
                                     title = "Announcements",
-                                    subtitle = "5 new",
+                                    subtitle = if (unreadCount > 0) "$unreadCount new" else "No new",
+                                    // ✅ Dynamic subtitle based on unread count
                                     color = Color(0xFF7B1FA2),
                                     modifier = Modifier.weight(1f),
                                     onClick = {
