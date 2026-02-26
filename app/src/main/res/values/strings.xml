@@ -27,4 +27,11 @@
     <string name="title_activity_announcement">Announcement</string>
     <string name="title_activity_announcement_screen">AnnouncementScreen</string>
     <string name="title_activity_grade_screen">GradeScreen</string>
+    <string name="title_activity_user">User</string>
+    <string name="title_activity_userdao">Userdao</string>
+    <string name="title_activity_user_database">UserDatabase</string>
+    <string name="title_activity_userrepository">Userrepository</string>
+    <string name="title_activity_signupscreen">Signupscreen</string>
+    <string name="title_activity_forgotpasswordscreen">Forgotpasswordscreen</string>
+    <string name="title_activity_authviewmodel">Authviewmodel</string>
 </resources>
