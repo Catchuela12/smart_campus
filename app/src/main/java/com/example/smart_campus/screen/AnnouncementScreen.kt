@@ -1,4 +1,10 @@
 package com.example.smart_campus.screen
+
+import android.app.Activity
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,8 +13,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.School
@@ -23,17 +31,40 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smart_campus.screen.Announcement_viewmodel.AnnouncementViewModel
 import com.example.smart_campus.screen.Announcement_data.Announcement
+import com.example.smart_campus.ui.theme.Smart_campusTheme
+
+/**
+ * Activity for the Announcement Screen.
+ * This class is what Dashboard.kt refers to in its Intent.
+ */
+class AnnouncementScreen : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            Smart_campusTheme {
+                // Use the renamed composable
+                AnnouncementScreenContent()
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnnouncementScreen(viewModel: AnnouncementViewModel) {
+fun AnnouncementScreenContent(
+    viewModel: AnnouncementViewModel = viewModel(factory = AnnouncementViewModel.Factory)
+) {
     val announcements by viewModel.allAnnouncements.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -44,41 +75,60 @@ fun AnnouncementScreen(viewModel: AnnouncementViewModel) {
                             colors = listOf(Color(0xFF1B5E20), Color(0xFF2E7D32))
                         )
                     )
-                    .windowInsetsPadding(WindowInsets.statusBars) // Respect the status bar (battery/clock)
+                    .windowInsetsPadding(WindowInsets.statusBars)
             ) {
+                // Modified back button and title to be close to each other, like in ScheduleScreen
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { (context as? Activity)?.finish() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+                    Text(
+                        text = "Announcements",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    )
+                }
+                
+                // Keep the subtitle below
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 24.dp, start = 20.dp, end = 20.dp)
+                        .padding(bottom = 24.dp, start = 20.dp, end = 20.dp)
                 ) {
-                    Column {
-                        Text(
-                            text = "Announcements",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                color = Color.White,
-                                fontWeight = FontWeight.ExtraBold,
-                                letterSpacing = 0.5.sp
-                            )
+                    Text(
+                        text = "Stay updated with the latest campus news",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color.White.copy(alpha = 0.8f)
                         )
-                        Text(
-                            text = "Stay updated with the latest campus news",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        )
-                    }
+                    )
                 }
             }
         },
         containerColor = Color(0xFFF5F7FA),
-        contentWindowInsets = WindowInsets.navigationBars // Respect the bottom navigation bar
+        contentWindowInsets = WindowInsets.navigationBars
     ) { paddingValues ->
         if (announcements.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = Color(0xFF2E7D32))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator(color = Color(0xFF2E7D32))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Loading announcements...", color = Color.Gray)
+                }
             }
         } else {
             LazyColumn(
@@ -90,7 +140,7 @@ fun AnnouncementScreen(viewModel: AnnouncementViewModel) {
             ) {
                 items(announcements) { announcement ->
                     AnnouncementItem(announcement = announcement, onAnnouncementClicked = {
-                        viewModel.toggleReadStatus(announcement)
+                        viewModel.markAsRead(announcement)
                     })
                 }
                 item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -106,7 +156,7 @@ fun AnnouncementItem(announcement: Announcement, onAnnouncementClicked: () -> Un
             .fillMaxWidth()
             .clickable { onAnnouncementClicked() },
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         )
@@ -193,6 +243,7 @@ fun getIconForName(name: String): ImageVector {
         "Work" -> Icons.Default.Work
         "School" -> Icons.Default.School
         "Build" -> Icons.Default.Build
+        "Info" -> Icons.Default.Info
         else -> Icons.Default.Notifications
     }
 }
