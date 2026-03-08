@@ -3,6 +3,7 @@ package com.example.smart_campus.screen.Announcement_viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import com.example.smart_campus.screen.Announcement_data.AnnouncementRepository
 import com.example.smart_campus.screen.Announcement_data.Announcement
+import com.example.smart_campus.screen.Announcement_data.AnnouncementApp
 
 class AnnouncementViewModel(private val repository: AnnouncementRepository) : ViewModel() {
 
@@ -26,6 +28,14 @@ class AnnouncementViewModel(private val repository: AnnouncementRepository) : Vi
     fun toggleReadStatus(announcement: Announcement) {
         viewModelScope.launch {
             repository.update(announcement.copy(isRead = !announcement.isRead))
+        }
+    }
+
+    fun markAsRead(announcement: Announcement) {
+        viewModelScope.launch {
+            if (!announcement.isRead) {
+                repository.update(announcement.copy(isRead = true))
+            }
         }
     }
 
@@ -77,14 +87,22 @@ class AnnouncementViewModel(private val repository: AnnouncementRepository) : Vi
             }
         }
     }
-}
 
-class AnnouncementViewModelFactory(private val repository: AnnouncementRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(AnnouncementViewModel::class.java)) {
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            return AnnouncementViewModel(repository) as T
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                // Get the Application object from extras
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as AnnouncementApp
+
+                // Create a new instance of the AnnouncementViewModel
+                return AnnouncementViewModel(
+                    application.container.announcementRepository
+                ) as T
+            }
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
