@@ -97,6 +97,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+
+
     fun logout() {
         _currentUser.value = null
         _authState.value = AuthState.Idle

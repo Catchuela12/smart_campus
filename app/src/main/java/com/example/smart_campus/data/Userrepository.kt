@@ -73,4 +73,14 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun updateUser(user: User) {
         userDao.update(user)
     }
+
+    suspend fun changePassword(userId: Int, currentPassword: String, newPassword: String): Boolean {
+        val user = userDao.getUserByIdAndPassword(userId, currentPassword)
+        return if (user != null) {
+            userDao.updatePassword(userId, newPassword)
+            true
+        } else {
+            false  // current password was wrong
+        }
+    }
 }
