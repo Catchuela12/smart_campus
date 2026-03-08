@@ -34,4 +34,5 @@
     <string name="title_activity_signupscreen">Signupscreen</string>
     <string name="title_activity_forgotpasswordscreen">Forgotpasswordscreen</string>
     <string name="title_activity_authviewmodel">Authviewmodel</string>
+    <string name="title_activity_userprofilestate">Userprofilestate</string>
 </resources>

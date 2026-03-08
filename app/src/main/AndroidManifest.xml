@@ -10,7 +10,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Smart_campus">
-
+        <activity
+            android:name=".Userprofilestate"
+            android:exported="false"
+            android:label="@string/title_activity_userprofilestate"
+            android:theme="@style/Theme.Smart_campus" />
         <!-- Authentication Screens -->
         <activity
             android:name=".screen.LoginScreen"
@@ -18,68 +22,54 @@
             android:theme="@style/Theme.Smart_campus">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".screen.SignUpScreen"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
         <activity
             android:name=".screen.ForgotPasswordScreen"
             android:exported="false"
-            android:theme="@style/Theme.Smart_campus" />
-
-        <!-- Main Screens -->
+            android:theme="@style/Theme.Smart_campus" /> <!-- Main Screens -->
         <activity
             android:name=".screen.Dashboard"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
         <activity
             android:name=".screen.ProfileScreen"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
         <activity
             android:name=".screen.SettingScreen"
             android:exported="false"
-            android:theme="@style/Theme.Smart_campus" />
-
-        <!-- Feature Screens -->
+            android:theme="@style/Theme.Smart_campus" /> <!-- Feature Screens -->
         <activity
             android:name=".screen.ScheduleScreen"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
         <activity
             android:name=".screen.ToDoScreen"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
         <activity
             android:name=".screen.AnnouncementScreen"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
         <activity
             android:name=".screen.GradeScreen"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
         <activity
             android:name=".screen.CampusInfo"
             android:exported="false"
-            android:theme="@style/Theme.Smart_campus" />
-
-        <!-- Optional MainActivity (can be removed if unused) -->
+            android:theme="@style/Theme.Smart_campus" /> <!-- Optional MainActivity (can be removed if unused) -->
         <activity
             android:name=".screen.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.Smart_campus" />
-
     </application>
 
 </manifest>

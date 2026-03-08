@@ -81,6 +81,8 @@ dependencies {
     // ✅ Coroutines
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
 
     // Testing
     testImplementation(libs.junit)
