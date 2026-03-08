@@ -10,5 +10,7 @@ data class Announcement(
     val title: String,
     val content: String,
     val date: String,
+    val iconName: String, // Store icon name as string
+    val categoryColor: Long, // Store color as Long
     val isRead: Boolean = false
 )
