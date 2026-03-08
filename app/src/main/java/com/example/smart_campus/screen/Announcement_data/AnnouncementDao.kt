@@ -21,4 +21,7 @@ interface AnnouncementDao {
 
     @Query("SELECT * FROM announcements WHERE id = :id")
     suspend fun getAnnouncementById(id: Int): Announcement?
+
+    @Query("DELETE FROM announcements")
+    suspend fun deleteAllAnnouncements()
 }
