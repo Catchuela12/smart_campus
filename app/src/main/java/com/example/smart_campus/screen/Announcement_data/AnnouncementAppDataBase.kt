@@ -23,7 +23,6 @@ abstract class AnnouncementAppDataBase : RoomDatabase() {
                 )
                     .fallbackToDestructiveMigration() // Simplest for development when schema changes
                     .build()
-
                 INSTANCE = instance
                 instance
             }
