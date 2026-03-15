@@ -71,6 +71,8 @@ class GradeScreen : ComponentActivity() {
                                 Text("Academic Year 2025-2026", color = Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text("Total Units: 21", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text("Last Updated: October 24, 2025", color = Color.White.copy(alpha = 0.6f), fontSize = 10.sp)
                             }
                         }
 
