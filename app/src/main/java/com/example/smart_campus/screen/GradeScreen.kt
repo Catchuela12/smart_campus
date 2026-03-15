@@ -69,6 +69,8 @@ class GradeScreen : ComponentActivity() {
                                 Text("General Weighted Average", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
                                 Text("1.50", color = Color.White, fontSize = 42.sp, fontWeight = FontWeight.Bold)
                                 Text("Academic Year 2025-2026", color = Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text("Total Units: 21", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                             }
                         }
 
@@ -77,13 +79,13 @@ class GradeScreen : ComponentActivity() {
                         Text("Semester Grades", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 16.sp)
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        GradeRow("Mobile Programming 1", "1.25")
-                        GradeRow("Data Structures", "1.50")
-                        GradeRow("Database Management", "1.75")
-                        GradeRow("Web Development", "1.25")
-                        GradeRow("Mobile Programming 2", "1.50")
-                        GradeRow("Computer Ethics", "1.00")
-                        
+                        GradeRow("CCS203", "Mobile Programming 1", "1.25")
+                        GradeRow("CCS102", "Data Structures", "1.50")
+                        GradeRow("CCS202", "Database Management", "1.75")
+                        GradeRow("CCS201", "Web Development", "1.25")
+                        GradeRow("CCS301", "Mobile Programming 2", "1.50")
+                        GradeRow("GE101", "Computer Ethics", "1.00")
+
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
@@ -93,7 +95,7 @@ class GradeScreen : ComponentActivity() {
 }
 
 @Composable
-fun GradeRow(subject: String, grade: String) {
+fun GradeRow(code: String, subject: String, grade: String) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -104,6 +106,7 @@ fun GradeRow(subject: String, grade: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
+                Text(code, fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
                 Text(subject, fontSize = 16.sp, fontWeight = FontWeight.Medium)
             }
             Text(grade, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
