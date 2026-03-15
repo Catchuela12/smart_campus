@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,26 +35,44 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smart_campus.R
+import com.example.smart_campus.ui.theme.Smart_campusTheme
+import com.example.smart_campus.viewmodel.AuthState
+import com.example.smart_campus.viewmodel.AuthViewModel
 
 class LoginScreen : ComponentActivity() {
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
-            _root_ide_package_.com.example.smart_campus.ui.theme.Smart_campusTheme {
-                LoginUI { username ->
-                    Toast.makeText(
-                        this,
-                        "Login successful",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            Smart_campusTheme {
+                LoginUI(
+                    authViewModel = authViewModel,
+                    onLoginSuccess = { user ->
+                        Toast.makeText(this, "Welcome ${user.fullName}!", Toast.LENGTH_SHORT).show()
 
-                    startActivity(Intent(this, Dashboard::class.java))
-                    finish()
-                }
+                        val intent = Intent(this, Dashboard::class.java).apply {
+                            putExtra("USER_ID", user.id)
+                            putExtra("STUDENT_ID", user.studentId)
+                            putExtra("FULL_NAME", user.fullName)
+                            putExtra("EMAIL", user.email)
+                            putExtra("PROGRAM", user.program)
+                            putExtra("YEAR_LEVEL", user.yearLevel)
+                        }
+                        startActivity(intent)
+                        finish()
+                    },
+                    onNavigateToSignUp = {
+                        startActivity(Intent(this, SignUpScreen::class.java))
+                    },
+                    onNavigateToForgotPassword = {
+                        startActivity(Intent(this, ForgotPasswordScreen::class.java))
+                    }
+                )
             }
         }
     }
@@ -75,14 +94,35 @@ object LoginColors {
 }
 
 @Composable
-fun LoginUI(onLoginSuccess: (String) -> Unit) {
+fun LoginUI(
+    authViewModel: AuthViewModel,
+    onLoginSuccess: (com.example.smart_campus.data.User) -> Unit,
+    onNavigateToSignUp: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit
+) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val authState by authViewModel.authState.collectAsStateWithLifecycle()
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
+
+    // Handle auth state changes
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Success -> {
+                val user = (authState as AuthState.Success).user
+                onLoginSuccess(user)
+                authViewModel.resetAuthState()
+            }
+            is AuthState.Error -> {
+                Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_LONG).show()
+                authViewModel.resetAuthState()
+            }
+            else -> {}
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -380,13 +420,7 @@ fun LoginUI(onLoginSuccess: (String) -> Unit) {
                             color = LoginColors.PrimaryGreen,
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp,
-                            modifier = Modifier.clickable {
-                                Toast.makeText(
-                                    context,
-                                    "Password recovery coming soon",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            modifier = Modifier.clickable { onNavigateToForgotPassword() }
                         )
                     }
 
@@ -401,15 +435,8 @@ fun LoginUI(onLoginSuccess: (String) -> Unit) {
                                     "Please fill in all fields",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                            } else if (username == "student" && password == "1234") {
-                                isLoading = true
-                                onLoginSuccess(username)
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "Invalid credentials",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                authViewModel.login(username, password)
                             }
                         },
                         modifier = Modifier
@@ -425,9 +452,9 @@ fun LoginUI(onLoginSuccess: (String) -> Unit) {
                             containerColor = LoginColors.PrimaryGreen,
                             disabledContainerColor = LoginColors.PrimaryGreen.copy(alpha = 0.6f)
                         ),
-                        enabled = !isLoading
+                        enabled = authState !is AuthState.Loading
                     ) {
-                        if (isLoading) {
+                        if (authState is AuthState.Loading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(26.dp),
                                 color = Color.White,
@@ -490,13 +517,7 @@ fun LoginUI(onLoginSuccess: (String) -> Unit) {
                             color = LoginColors.PrimaryGreen,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
-                            modifier = Modifier.clickable {
-                                Toast.makeText(
-                                    context,
-                                    "Sign up feature coming soon",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            modifier = Modifier.clickable { onNavigateToSignUp() }
                         )
                     }
                 }
@@ -510,7 +531,7 @@ fun LoginUI(onLoginSuccess: (String) -> Unit) {
                 modifier = Modifier.padding(bottom = 24.dp)
             ) {
                 Text(
-                    text = "EXE Campus v1.0.4",
+                    text = "Smart Campus v1.0.5",
                     style = MaterialTheme.typography.bodySmall,
                     color = LoginColors.TextSecondary.copy(alpha = 0.7f),
                     fontSize = 12.sp
