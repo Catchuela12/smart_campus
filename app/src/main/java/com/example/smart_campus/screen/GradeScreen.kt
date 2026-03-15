@@ -81,12 +81,13 @@ class GradeScreen : ComponentActivity() {
                         Text("Semester Grades", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 16.sp)
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        GradeRow("CCS203", "Mobile Programming 1", "1.25")
-                        GradeRow("CCS102", "Data Structures", "1.50")
-                        GradeRow("CCS202", "Database Management", "1.75")
-                        GradeRow("CCS201", "Web Development", "1.25")
-                        GradeRow("CCS301", "Mobile Programming 2", "1.50")
-                        GradeRow("GE101", "Computer Ethics", "1.00")
+                        // Added status (PASSED) to each row
+                        GradeRow("CCS203", "Mobile Programming 1", "3.0", "1.25", "PASSED")
+                        GradeRow("CCS102", "Data Structures", "3.0", "1.50", "PASSED")
+                        GradeRow("CCS202", "Database Management", "3.0", "1.75", "PASSED")
+                        GradeRow("CCS201", "Web Development", "3.0", "1.25", "PASSED")
+                        GradeRow("CCS301", "Mobile Programming 2", "3.0", "1.50", "PASSED")
+                        GradeRow("GE101", "Computer Ethics", "3.0", "1.00", "PASSED")
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -97,7 +98,7 @@ class GradeScreen : ComponentActivity() {
 }
 
 @Composable
-fun GradeRow(code: String, subject: String, grade: String) {
+fun GradeRow(code: String, subject: String, units: String, grade: String, status: String) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -110,6 +111,11 @@ fun GradeRow(code: String, subject: String, grade: String) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(code, fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
                 Text(subject, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Row {
+                    Text("Units: $units", fontSize = 11.sp, color = Color.Gray)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(status, fontSize = 11.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
+                }
             }
             Text(grade, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
         }
