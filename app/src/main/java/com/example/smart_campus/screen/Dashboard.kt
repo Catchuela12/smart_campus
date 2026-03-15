@@ -61,6 +61,7 @@ class Dashboard : ComponentActivity() {
 
         // Load saved profile state (photo + display name) — must be after userId is read
         UserProfileState.init(applicationContext, userId)
+        AppThemeState.init(applicationContext)
 
         setContent {
             Smart_campusTheme {
@@ -80,17 +81,15 @@ class Dashboard : ComponentActivity() {
 // ── Color palette ─────────────────────────────────────────────────────────────
 
 object AppColors {
+    // Green brand colors stay fixed — they are intentional brand colors
     val PrimaryGreen   = Color(0xFF1B5E20)
     val SecondaryGreen = Color(0xFF2E7D32)
     val LightGreen     = Color(0xFF4CAF50)
     val AccentGreen    = Color(0xFF66BB6A)
-    val BackgroundGray = Color(0xFFF8F9FA)
-    val CardWhite      = Color(0xFFFFFFFF)
-    val TextPrimary    = Color(0xFF212121)
-    val TextSecondary  = Color(0xFF757575)
-    val DividerGray    = Color(0xFFE0E0E0)
-    val ErrorRed       = Color(0xFFD32F2F)
     val LightGreenBg   = Color(0xFFE8F5E9)
+    val ErrorRed       = Color(0xFFD32F2F)
+    // These are now resolved dynamically via MaterialTheme inside composables
+    // Do NOT use MaterialTheme.colorScheme.background / CardWhite / TextPrimary etc. directly
 }
 
 // ── Recent Activity model ─────────────────────────────────────────────────────
@@ -239,7 +238,7 @@ fun DashboardScreen(
                 Text(
                     text = "MENU",
                     style = MaterialTheme.typography.labelMedium,
-                    color = AppColors.TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
                     fontSize = 11.sp,
@@ -259,7 +258,9 @@ fun DashboardScreen(
                 })
                 DrawerMenuItem(icon = Icons.Default.Settings, label = "Settings", onClick = {
                     scope.launch { drawerState.close() }
-                    context.startActivity(Intent(context, SettingScreen::class.java))
+                    context.startActivity(Intent(context, SettingScreen::class.java).apply {
+                        putExtra("USER_ID", userId)
+                    })
                 })
                 DrawerMenuItem(icon = Icons.Default.Info, label = "Campus Info", onClick = {
                     scope.launch { drawerState.close() }
@@ -269,7 +270,7 @@ fun DashboardScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 24.dp),
-                    color = AppColors.DividerGray,
+                    color = MaterialTheme.colorScheme.outline,
                     thickness = 1.dp
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -333,7 +334,7 @@ fun DashboardScreen(
                 modifier = Modifier
                     .padding(padding)
                     .fillMaxSize()
-                    .background(AppColors.BackgroundGray)
+                    .background(MaterialTheme.colorScheme.background)
                     .verticalScroll(rememberScrollState())
             ) {
                 // Welcome banner
@@ -472,7 +473,7 @@ fun DashboardScreen(
                     if (recentActivity.isEmpty()) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = AppColors.CardWhite),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             shape = RoundedCornerShape(16.dp),
                             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                         ) {
@@ -502,13 +503,13 @@ fun DashboardScreen(
                                     text = "No activity yet",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 15.sp,
-                                    color = AppColors.TextPrimary
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "Features you visit will appear here",
                                     fontSize = 13.sp,
-                                    color = AppColors.TextSecondary
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -564,7 +565,7 @@ fun DashboardScreen(
 fun RecentActivityCard(item: RecentActivityItem) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = AppColors.CardWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -594,7 +595,7 @@ fun RecentActivityCard(item: RecentActivityItem) {
                     text = item.title,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = AppColors.TextPrimary,
+                    color = MaterialTheme.colorScheme.onBackground,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -602,7 +603,7 @@ fun RecentActivityCard(item: RecentActivityItem) {
                 Text(
                     text = item.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = AppColors.TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -611,7 +612,7 @@ fun RecentActivityCard(item: RecentActivityItem) {
             Text(
                 text = item.timestamp.toRelativeTime(),
                 fontSize = 11.sp,
-                color = AppColors.TextSecondary.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                 fontWeight = FontWeight.Medium
             )
         }
@@ -664,7 +665,7 @@ fun DrawerMenuItem(
                 text = label,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
-                color = if (isDestructive) AppColors.ErrorRed else AppColors.TextPrimary,
+                color = if (isDestructive) AppColors.ErrorRed else MaterialTheme.colorScheme.onBackground,
                 fontSize = 15.sp,
                 modifier = Modifier.weight(1f)
             )
@@ -682,7 +683,7 @@ fun SectionHeader(title: String) {
             text = title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = AppColors.TextPrimary
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.width(8.dp))
         Box(
@@ -710,7 +711,7 @@ fun EnhancedCard(
         modifier = modifier
             .height(140.dp)
             .shadow(elevation = if (pressed) 1.dp else 4.dp, shape = RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(containerColor = AppColors.CardWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp),
         onClick = { pressed = !pressed; onClick?.invoke() }
     ) {
@@ -731,7 +732,7 @@ fun EnhancedCard(
                     Icon(imageVector = icon, contentDescription = null, tint = color, modifier = Modifier.size(28.dp))
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = AppColors.TextPrimary)
+                Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                 Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF424242), fontWeight = FontWeight.Medium)
             }
         }
@@ -747,7 +748,7 @@ fun EnhancedActivityItem(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
-        colors = CardDefaults.cardColors(containerColor = AppColors.CardWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -766,9 +767,9 @@ fun EnhancedActivityItem(
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = AppColors.TextPrimary)
+                Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = AppColors.TextSecondary)
+                Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

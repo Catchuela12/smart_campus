@@ -50,6 +50,7 @@ class ProfileScreen : ComponentActivity() {
 
         // Init shared profile state — must be after userId is read
         UserProfileState.init(applicationContext, userId)
+        AppThemeState.init(applicationContext)
         UserProfileState.seedDisplayNameIfEmpty(applicationContext, fullName)
 
         setContent {
@@ -70,15 +71,13 @@ class ProfileScreen : ComponentActivity() {
 // ── Color palette ─────────────────────────────────────────────────────────────
 
 object ProfileColors {
+    // Brand greens stay fixed
     val PrimaryGreen   = Color(0xFF1B5E20)
     val SecondaryGreen = Color(0xFF2E7D32)
     val LightGreen     = Color(0xFF4CAF50)
     val AccentGreen    = Color(0xFF66BB6A)
-    val BackgroundGray = Color(0xFFF8F9FA)
-    val CardWhite      = Color(0xFFFFFFFF)
-    val TextPrimary    = Color(0xFF212121)
-    val TextSecondary  = Color(0xFF757575)
     val LightGreenBg   = Color(0xFFE8F5E9)
+    // Dynamic colors — use MaterialTheme.colorScheme inside composables
 }
 
 // ── ProfileView ───────────────────────────────────────────────────────────────
@@ -142,7 +141,7 @@ fun ProfileView(
                     Text(
                         "Enter your new display name:",
                         fontSize = 14.sp,
-                        color = ProfileColors.TextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     OutlinedTextField(
                         value = textFieldValue,
@@ -154,7 +153,7 @@ fun ProfileView(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
                             focusedBorderColor = ProfileColors.PrimaryGreen,
-                            unfocusedBorderColor = ProfileColors.TextSecondary.copy(alpha = 0.3f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                             cursorColor = ProfileColors.PrimaryGreen
                         )
                     )
@@ -186,7 +185,7 @@ fun ProfileView(
     // ── Scaffold ──────────────────────────────────────────────────────────────
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = ProfileColors.BackgroundGray,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text("Profile", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
@@ -407,7 +406,7 @@ fun ProfileView(
             Text(
                 "Smart Campus v1.0.5",
                 fontSize = 12.sp,
-                color = ProfileColors.TextSecondary.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                 modifier = Modifier.padding(bottom = 24.dp)
             )
         }
@@ -426,7 +425,7 @@ private fun SectionLabel(title: String) {
             text = title,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = ProfileColors.TextSecondary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             letterSpacing = 1.2.sp
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -456,7 +455,7 @@ fun InfoActionCard(
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = ProfileColors.CardWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp, pressedElevation = 6.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -475,14 +474,14 @@ fun InfoActionCard(
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(label, fontSize = 12.sp, color = ProfileColors.TextSecondary, fontWeight = FontWeight.Medium, letterSpacing = 0.5.sp)
+                Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Medium, letterSpacing = 0.5.sp)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(value, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = ProfileColors.TextPrimary)
+                Text(value, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             }
             Icon(
                 Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
-                tint = ProfileColors.TextSecondary.copy(alpha = 0.5f),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -500,7 +499,7 @@ fun InfoCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = ProfileColors.CardWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -519,9 +518,9 @@ fun InfoCard(
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(label, fontSize = 12.sp, color = ProfileColors.TextSecondary, fontWeight = FontWeight.Medium, letterSpacing = 0.5.sp)
+                Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Medium, letterSpacing = 0.5.sp)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(value, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = ProfileColors.TextPrimary)
+                Text(value, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             }
         }
     }

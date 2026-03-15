@@ -11,11 +11,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Smart_campus">
         <activity
+            android:name=".ui.theme.Smartcampuscolors"
+            android:exported="false"
+            android:label="@string/title_activity_smartcampuscolors"
+            android:theme="@style/Theme.Smart_campus" />
+        <activity
+            android:name=".screen.Appthemestate"
+            android:exported="false"
+            android:label="@string/title_activity_appthemestate"
+            android:theme="@style/Theme.Smart_campus" />
+        <activity
             android:name=".Userprofilestate"
             android:exported="false"
             android:label="@string/title_activity_userprofilestate"
-            android:theme="@style/Theme.Smart_campus" />
-        <!-- Authentication Screens -->
+            android:theme="@style/Theme.Smart_campus" /> <!-- Authentication Screens -->
         <activity
             android:name=".screen.LoginScreen"
             android:exported="true"

@@ -42,6 +42,10 @@ class AnnouncementScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Load persisted theme so dark mode applies here too
+        AppThemeState.init(applicationContext)
+
         setContent {
             Smart_campusTheme {
                 AnnouncementScreenContent()
@@ -54,6 +58,7 @@ class AnnouncementScreen : ComponentActivity() {
 @Composable
 fun AnnouncementScreenContent() {
     val context = LocalContext.current
+
     val viewModel: AnnouncementViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -68,9 +73,9 @@ fun AnnouncementScreenContent() {
             }
         }
     )
+
     val announcements by viewModel.allAnnouncements.collectAsState()
 
-    // Add sample data only once if empty
     LaunchedEffect(announcements.isEmpty()) {
         if (announcements.isEmpty()) {
             viewModel.addSampleData()
@@ -113,10 +118,10 @@ fun AnnouncementScreenContent() {
                 }
             )
         },
-        containerColor = AppColors.BackgroundGray
+        containerColor = MaterialTheme.colorScheme.background  // ✅ was AppColors.BackgroundGray
     ) { paddingValues ->
+
         if (announcements.isEmpty()) {
-            // Empty state
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -131,14 +136,14 @@ fun AnnouncementScreenContent() {
                         imageVector = Icons.Default.Notifications,
                         contentDescription = null,
                         modifier = Modifier.size(80.dp),
-                        tint = AppColors.TextSecondary.copy(alpha = 0.3f)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)  // ✅ was AppColors.TextSecondary
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         "No announcements yet",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = AppColors.TextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant  // ✅ was AppColors.TextSecondary
                     )
                 }
             }
@@ -166,11 +171,14 @@ fun EnhancedAnnouncementItem(
     announcement: Announcement,
     onAnnouncementClicked: () -> Unit
 ) {
+    val isDark = AppThemeState.isDarkMode
+
     val backgroundColor by animateColorAsState(
-        targetValue = if (!announcement.isRead) {
-            Color(0xFFE8F5E9) // Light green for unread
-        } else {
-            Color.White
+        targetValue = when {
+            !announcement.isRead && isDark -> Color(0xFF1A2E1A)   // dark unread
+            !announcement.isRead           -> Color(0xFFE8F5E9)   // light unread
+            isDark                         -> MaterialTheme.colorScheme.surface
+            else                           -> Color.White
         },
         label = "background"
     )
@@ -180,7 +188,9 @@ fun EnhancedAnnouncementItem(
             .fillMaxWidth()
             .clickable { onAnnouncementClicked() },
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = if (!announcement.isRead) 4.dp else 2.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (!announcement.isRead) 4.dp else 2.dp
+        ),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Row(
@@ -189,7 +199,7 @@ fun EnhancedAnnouncementItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.Top
         ) {
-            // Icon with gradient background
+            // Icon box
             Box(
                 modifier = Modifier
                     .size(56.dp)
@@ -223,13 +233,12 @@ fun EnhancedAnnouncementItem(
                         text = announcement.title,
                         fontWeight = if (!announcement.isRead) FontWeight.Bold else FontWeight.SemiBold,
                         fontSize = 16.sp,
-                        color = AppColors.TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,  // ✅ was AppColors.TextPrimary
                         modifier = Modifier.weight(1f),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    // Unread indicator
                     if (!announcement.isRead) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Box(
@@ -246,7 +255,7 @@ fun EnhancedAnnouncementItem(
                 Text(
                     text = announcement.content,
                     fontSize = 14.sp,
-                    color = AppColors.TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,  // ✅ was AppColors.TextSecondary
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     lineHeight = 20.sp
@@ -254,10 +263,7 @@ fun EnhancedAnnouncementItem(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Date with icon
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Outlined.Circle,
                         contentDescription = null,

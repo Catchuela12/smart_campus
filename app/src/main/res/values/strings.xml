@@ -35,4 +35,6 @@
     <string name="title_activity_forgotpasswordscreen">Forgotpasswordscreen</string>
     <string name="title_activity_authviewmodel">Authviewmodel</string>
     <string name="title_activity_userprofilestate">Userprofilestate</string>
+    <string name="title_activity_appthemestate">Appthemestate</string>
+    <string name="title_activity_smartcampuscolors">Smartcampuscolors</string>
 </resources>

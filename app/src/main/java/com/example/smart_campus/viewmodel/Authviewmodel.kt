@@ -33,6 +33,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         repository = UserRepository(userDao)
     }
 
+    // ── Login ─────────────────────────────────────────────────────────────────
+
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
@@ -48,6 +50,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // ── Register ──────────────────────────────────────────────────────────────
+
     fun register(
         studentId: String,
         fullName: String,
@@ -62,11 +66,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
             val user = User(
                 studentId = studentId,
-                fullName = fullName,
-                email = email,
-                username = username,
-                password = password, // In production, hash this!
-                program = program,
+                fullName  = fullName,
+                email     = email,
+                username  = username,
+                password  = password, // In production, hash this!
+                program   = program,
                 yearLevel = yearLevel
             )
 
@@ -83,6 +87,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // ── Reset Password (Forgot Password flow) ─────────────────────────────────
+
     fun resetPassword(email: String, newPassword: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
@@ -97,7 +103,33 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // ── Change Password (Settings flow) ───────────────────────────────────────
 
+    fun changePassword(userId: Int, currentPassword: String, newPassword: String) {
+        viewModelScope.launch {
+            _authState.value = AuthState.Loading
+            try {
+                val success = repository.changePassword(userId, currentPassword, newPassword)
+                if (success) {
+                    val user = _currentUser.value
+                    if (user != null) {
+                        // Update in-memory user so session stays in sync
+                        val updatedUser = user.copy(password = newPassword)
+                        _currentUser.value = updatedUser
+                        _authState.value = AuthState.Success(updatedUser)
+                    } else {
+                        _authState.value = AuthState.Error("Session expired. Please log in again.")
+                    }
+                } else {
+                    _authState.value = AuthState.Error("Current password is incorrect")
+                }
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error("Failed to update password: ${e.message}")
+            }
+        }
+    }
+
+    // ── Logout ────────────────────────────────────────────────────────────────
 
     fun logout() {
         _currentUser.value = null
