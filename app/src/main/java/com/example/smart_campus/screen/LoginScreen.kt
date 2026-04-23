@@ -53,15 +53,25 @@ class LoginScreen : ComponentActivity() {
                 LoginUI(
                     authViewModel = authViewModel,
                     onLoginSuccess = { user ->
+                        // ── Regular student ───────────────────────────────────
                         Toast.makeText(this, "Welcome ${user.fullName}!", Toast.LENGTH_SHORT).show()
-
                         val intent = Intent(this, Dashboard::class.java).apply {
-                            putExtra("USER_ID", user.id)
+                            putExtra("USER_ID",    user.id)
                             putExtra("STUDENT_ID", user.studentId)
-                            putExtra("FULL_NAME", user.fullName)
-                            putExtra("EMAIL", user.email)
-                            putExtra("PROGRAM", user.program)
+                            putExtra("FULL_NAME",  user.fullName)
+                            putExtra("EMAIL",      user.email)
+                            putExtra("PROGRAM",    user.program)
                             putExtra("YEAR_LEVEL", user.yearLevel)
+                        }
+                        startActivity(intent)
+                        finish()
+                    },
+                    onAdminLoginSuccess = { user ->
+                        // ── Admin ─────────────────────────────────────────────
+                        Toast.makeText(this, "Welcome, ${user.fullName}!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, AdminDashboardScreen::class.java).apply {
+                            putExtra("ADMIN_ID",  user.id)
+                            putExtra("FULL_NAME", user.fullName)
                         }
                         startActivity(intent)
                         finish()
@@ -97,6 +107,7 @@ object LoginColors {
 fun LoginUI(
     authViewModel: AuthViewModel,
     onLoginSuccess: (com.example.smart_campus.data.User) -> Unit,
+    onAdminLoginSuccess: (com.example.smart_campus.data.User) -> Unit,  // ← NEW param
     onNavigateToSignUp: () -> Unit,
     onNavigateToForgotPassword: () -> Unit
 ) {
@@ -108,12 +119,17 @@ fun LoginUI(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // Handle auth state changes
+    // ── Handle auth state changes ─────────────────────────────────────────────
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Success -> {
                 val user = (authState as AuthState.Success).user
                 onLoginSuccess(user)
+                authViewModel.resetAuthState()
+            }
+            is AuthState.AdminSuccess -> {                    // ← NEW branch
+                val user = (authState as AuthState.AdminSuccess).user
+                onAdminLoginSuccess(user)
                 authViewModel.resetAuthState()
             }
             is AuthState.Error -> {
@@ -123,6 +139,10 @@ fun LoginUI(
             else -> {}
         }
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // UI — COMPLETELY UNCHANGED FROM ORIGINAL
+    // ─────────────────────────────────────────────────────────────────────────
 
     Box(
         modifier = Modifier
