@@ -18,21 +18,65 @@ class AnnouncementViewModel(private val repository: AnnouncementRepository) : Vi
         initialValue = emptyList()
     )
 
+    // ── Student-side: mark as read ────────────────────────────────────────────
+
     fun markAsRead(announcement: Announcement) {
         viewModelScope.launch {
             repository.update(announcement.copy(isRead = true))
         }
     }
 
+    // ── Student-side: seed sample data if DB is empty ─────────────────────────
+
     fun addSampleData() {
         viewModelScope.launch {
-            repository.insert(Announcement(title = "Welcome to Campus Announcements!", content = "This is a sample announcement to get you started.", date = "2024-01-01"))
-            repository.insert(Announcement(title = "Upcoming Holiday", content = "The campus will be closed for the upcoming holiday. Please plan accordingly.", date = "2024-01-15"))
+            repository.insert(
+                Announcement(
+                    title   = "Welcome to Campus Announcements!",
+                    content = "This is a sample announcement to get you started.",
+                    date    = "2024-01-01"
+                )
+            )
+            repository.insert(
+                Announcement(
+                    title   = "Upcoming Holiday",
+                    content = "The campus will be closed for the upcoming holiday. Please plan accordingly.",
+                    date    = "2024-01-15"
+                )
+            )
+        }
+    }
+
+    // ── Admin-side: post new announcement ────────────────────────────────────
+
+    fun addAnnouncement(announcement: Announcement) {
+        viewModelScope.launch {
+            repository.insert(announcement)
+        }
+    }
+
+    // ── Admin-side: edit existing announcement ────────────────────────────────
+
+    fun editAnnouncement(announcement: Announcement) {
+        viewModelScope.launch {
+            repository.update(announcement)
+        }
+    }
+
+    // ── Admin-side: delete announcement ──────────────────────────────────────
+
+    fun deleteAnnouncement(announcement: Announcement) {
+        viewModelScope.launch {
+            repository.delete(announcement)
         }
     }
 }
 
-class AnnouncementViewModelFactory(private val repository: AnnouncementRepository) : ViewModelProvider.Factory {
+// ── Factory ───────────────────────────────────────────────────────────────────
+
+class AnnouncementViewModelFactory(
+    private val repository: AnnouncementRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AnnouncementViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

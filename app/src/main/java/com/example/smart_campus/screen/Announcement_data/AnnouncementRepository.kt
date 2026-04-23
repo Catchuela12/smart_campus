@@ -14,6 +14,11 @@ class AnnouncementRepository(private val announcementDao: AnnouncementDao) {
         announcementDao.updateAnnouncement(announcement)
     }
 
+    // ← NEW: required for admin delete
+    suspend fun delete(announcement: Announcement) {
+        announcementDao.deleteAnnouncement(announcement)
+    }
+
     suspend fun getAnnouncementById(id: Int): Announcement? {
         return announcementDao.getAnnouncementById(id)
     }
