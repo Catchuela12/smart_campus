@@ -754,8 +754,6 @@ private fun AboutRow(label: String, value: String) {
     }
 }
 
-// ── TextField colors ──────────────────────────────────────────────────────────
-
 @Composable
 private fun settingsTextFieldColors() = OutlinedTextFieldDefaults.colors(
     focusedTextColor        = TextPrimary,
