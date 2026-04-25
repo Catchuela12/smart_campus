@@ -15,6 +15,7 @@ sealed class AuthState {
     object Idle : AuthState()
     object Loading : AuthState()
     data class Success(val user: User) : AuthState()
+    data class AdminSuccess(val user: User) : AuthState()
     data class Error(val message: String) : AuthState()
 }
 
@@ -43,7 +44,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
             result.onSuccess { user ->
                 _currentUser.value = user
-                _authState.value = AuthState.Success(user)
+                // Check if user is an admin
+                if (user.username == "admin" || user.studentId == "ADMIN") {
+                    _authState.value = AuthState.AdminSuccess(user)
+                } else {
+                    _authState.value = AuthState.Success(user)
+                }
             }.onFailure { exception ->
                 _authState.value = AuthState.Error(exception.message ?: "Login failed")
             }

@@ -1,11 +1,15 @@
 package com.example.smart_campus.screen
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,6 +39,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smart_campus.R
 import com.example.smart_campus.ui.theme.Smart_campusTheme
@@ -44,9 +49,33 @@ import com.example.smart_campus.viewmodel.AuthViewModel
 class LoginScreen : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Notifications disabled", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                // Permission already granted
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        askNotificationPermission()
 
         setContent {
             Smart_campusTheme {
@@ -107,7 +136,7 @@ object LoginColors {
 fun LoginUI(
     authViewModel: AuthViewModel,
     onLoginSuccess: (com.example.smart_campus.data.User) -> Unit,
-    onAdminLoginSuccess: (com.example.smart_campus.data.User) -> Unit,  // ← NEW param
+    onAdminLoginSuccess: (com.example.smart_campus.data.User) -> Unit,
     onNavigateToSignUp: () -> Unit,
     onNavigateToForgotPassword: () -> Unit
 ) {
@@ -127,7 +156,7 @@ fun LoginUI(
                 onLoginSuccess(user)
                 authViewModel.resetAuthState()
             }
-            is AuthState.AdminSuccess -> {                    // ← NEW branch
+            is AuthState.AdminSuccess -> {
                 val user = (authState as AuthState.AdminSuccess).user
                 onAdminLoginSuccess(user)
                 authViewModel.resetAuthState()
@@ -139,10 +168,6 @@ fun LoginUI(
             else -> {}
         }
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // UI — COMPLETELY UNCHANGED FROM ORIGINAL
-    // ─────────────────────────────────────────────────────────────────────────
 
     Box(
         modifier = Modifier
@@ -277,7 +302,7 @@ fun LoginUI(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Login card with enhanced shadow
+            // Login card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
