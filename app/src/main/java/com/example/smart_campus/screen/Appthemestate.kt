@@ -9,27 +9,23 @@ import androidx.compose.runtime.setValue
 /**
  * App-wide dark mode state.
  *
- * Because many screens use hardcoded Color() values inside non-composable
- * objects (AppColors, ProfileColors, etc.), simply toggling a mutableStateOf
- * is not enough — those values are computed once and never recomposed.
- *
- * The solution: recreate the Activity when the theme changes.
- * This forces ALL composables in the activity to rebuild from scratch,
- * picking up the correct theme-aware colors from SmartCampusColors.current.
+ * Defaults to TRUE for all users.
  */
 object AppThemeState {
 
     private const val PREFS_NAME = "smart_campus_theme_prefs"
     private const val KEY_DARK   = "is_dark_mode"
 
-    // Observable — Smart_campusTheme reads this to pick the color scheme
-    var isDarkMode by mutableStateOf(false)
+    // Observable — Smart_campusTheme reads this to pick the color scheme.
+    // Defaulting to true for app-wide dark mode.
+    var isDarkMode by mutableStateOf(true)
         private set
 
     /** Call in every Activity.onCreate() before setContent { } */
     fun init(context: Context) {
         val prefs  = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        isDarkMode = prefs.getBoolean(KEY_DARK, false)
+        // Default to true if the key hasn't been set yet
+        isDarkMode = prefs.getBoolean(KEY_DARK, true)
     }
 
     /**
@@ -43,8 +39,6 @@ object AppThemeState {
             .putBoolean(KEY_DARK, enabled)
             .apply()
 
-        // Recreate the host Activity — this is the key fix.
-        // All composables rebuild, SmartCampusColors.current returns new values.
         if (context is Activity) {
             context.recreate()
         }
