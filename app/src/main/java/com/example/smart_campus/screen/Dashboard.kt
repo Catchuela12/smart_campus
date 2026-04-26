@@ -59,7 +59,6 @@ class Dashboard : ComponentActivity() {
         val program   = intent.getStringExtra("PROGRAM") ?: ""
         val yearLevel = intent.getStringExtra("YEAR_LEVEL") ?: ""
 
-        // Load saved profile state (photo + display name) — must be after userId is read
         UserProfileState.init(applicationContext, userId)
         AppThemeState.init(applicationContext)
 
@@ -81,15 +80,12 @@ class Dashboard : ComponentActivity() {
 // ── Color palette ─────────────────────────────────────────────────────────────
 
 object AppColors {
-    // Green brand colors stay fixed — they are intentional brand colors
     val PrimaryGreen   = Color(0xFF1B5E20)
     val SecondaryGreen = Color(0xFF2E7D32)
     val LightGreen     = Color(0xFF4CAF50)
     val AccentGreen    = Color(0xFF66BB6A)
     val LightGreenBg   = Color(0xFFE8F5E9)
     val ErrorRed       = Color(0xFFD32F2F)
-    // These are now resolved dynamically via MaterialTheme inside composables
-    // Do NOT use MaterialTheme.colorScheme.background / CardWhite / TextPrimary etc. directly
 }
 
 // ── Recent Activity model ─────────────────────────────────────────────────────
@@ -129,7 +125,6 @@ fun DashboardScreen(
     val context     = LocalContext.current
     var showLogoutDialog by remember { mutableStateOf(false) }
 
-    // Announcements ViewModel
     val announcementViewModel: AnnouncementViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -147,7 +142,6 @@ fun DashboardScreen(
     val announcements by announcementViewModel.allAnnouncements.collectAsState()
     val unreadCount    = announcements.count { !it.isRead }
 
-    // Recent activity list — max 5 entries, most recent first, no duplicates
     val recentActivity = remember { mutableStateListOf<RecentActivityItem>() }
 
     fun logActivity(item: RecentActivityItem) {
@@ -165,7 +159,7 @@ fun DashboardScreen(
             ModalDrawerSheet(
                 modifier = Modifier.width(320.dp),
                 drawerShape = RoundedCornerShape(topEnd = 24.dp, bottomEnd = 24.dp),
-                drawerContainerColor = Color(0xFFFAFAFA)
+                drawerContainerColor = MaterialTheme.colorScheme.surface
             ) {
                 Box(
                     modifier = Modifier
@@ -182,7 +176,6 @@ fun DashboardScreen(
                         .padding(24.dp)
                 ) {
                     Column {
-                        // Dynamic avatar — photo or fallback icon
                         val drawerImageUri = UserProfileState.profileImageUri
                         Box(
                             modifier = Modifier
@@ -270,7 +263,7 @@ fun DashboardScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 24.dp),
-                    color = MaterialTheme.colorScheme.outline,
+                    color = MaterialTheme.colorScheme.outlineVariant,
                     thickness = 1.dp
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -304,7 +297,6 @@ fun DashboardScreen(
                         }
                     },
                     actions = {
-                        // Notification bell also logs activity
                         IconButton(onClick = {
                             logActivity(RecentActivityItem(
                                 title     = "Announcements",
@@ -337,7 +329,6 @@ fun DashboardScreen(
                     .background(MaterialTheme.colorScheme.background)
                     .verticalScroll(rememberScrollState())
             ) {
-                // Welcome banner
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -374,8 +365,6 @@ fun DashboardScreen(
                 }
 
                 Column(modifier = Modifier.padding(16.dp)) {
-
-                    // ── Quick Access ──────────────────────────────────────────
                     SectionHeader(title = "Quick Access")
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -465,8 +454,6 @@ fun DashboardScreen(
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
-
-                    // ── Recent Activity ───────────────────────────────────────
                     SectionHeader(title = "Recent Activity")
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -488,13 +475,13 @@ fun DashboardScreen(
                                     modifier = Modifier
                                         .size(56.dp)
                                         .clip(CircleShape)
-                                        .background(AppColors.LightGreenBg),
+                                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.History,
                                         contentDescription = null,
-                                        tint = AppColors.AccentGreen,
+                                        tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(28.dp)
                                     )
                                 }
@@ -503,7 +490,7 @@ fun DashboardScreen(
                                     text = "No activity yet",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 15.sp,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
@@ -519,14 +506,12 @@ fun DashboardScreen(
                             Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
-
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
     }
 
-    // Logout dialog
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
@@ -558,8 +543,6 @@ fun DashboardScreen(
         )
     }
 }
-
-// ── RecentActivityCard ────────────────────────────────────────────────────────
 
 @Composable
 fun RecentActivityCard(item: RecentActivityItem) {
@@ -595,7 +578,7 @@ fun RecentActivityCard(item: RecentActivityItem) {
                     text = item.title,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -619,8 +602,6 @@ fun RecentActivityCard(item: RecentActivityItem) {
     }
 }
 
-// ── Unchanged composables ─────────────────────────────────────────────────────
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerMenuItem(
@@ -635,7 +616,7 @@ fun DrawerMenuItem(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp),
         shape = RoundedCornerShape(12.dp),
-        color = if (isDestructive) Color(0xFFFFEBEE) else Color.Transparent
+        color = if (isDestructive) MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f) else Color.Transparent
     ) {
         Row(
             modifier = Modifier
@@ -648,8 +629,8 @@ fun DrawerMenuItem(
                     .size(40.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(
-                        if (isDestructive) AppColors.ErrorRed.copy(alpha = 0.15f)
-                        else AppColors.LightGreenBg
+                        if (isDestructive) MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+                        else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -657,7 +638,7 @@ fun DrawerMenuItem(
                     imageVector = icon,
                     contentDescription = null,
                     modifier = Modifier.size(22.dp),
-                    tint = if (isDestructive) AppColors.ErrorRed else AppColors.SecondaryGreen
+                    tint = if (isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -665,7 +646,7 @@ fun DrawerMenuItem(
                 text = label,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
-                color = if (isDestructive) AppColors.ErrorRed else MaterialTheme.colorScheme.onBackground,
+                color = if (isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
                 fontSize = 15.sp,
                 modifier = Modifier.weight(1f)
             )
@@ -683,14 +664,14 @@ fun SectionHeader(title: String) {
             text = title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(8.dp))
         Box(
             modifier = Modifier
                 .height(3.dp)
                 .width(40.dp)
-                .background(AppColors.AccentGreen, shape = RoundedCornerShape(2.dp))
+                .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(2.dp))
         )
     }
 }
@@ -732,8 +713,8 @@ fun EnhancedCard(
                     Icon(imageVector = icon, contentDescription = null, tint = color, modifier = Modifier.size(28.dp))
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-                Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF424242), fontWeight = FontWeight.Medium)
+                Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Medium)
             }
         }
     }
@@ -767,7 +748,7 @@ fun EnhancedActivityItem(
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground)
+                Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
