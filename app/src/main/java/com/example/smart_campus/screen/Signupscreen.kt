@@ -69,12 +69,7 @@ class SignUpScreen : ComponentActivity() {
 // ── Colors ────────────────────────────────────────────────────────────────────
 
 private val GreenPrimary    = Color(0xFF1B5E20)
-private val GreenLight      = Color(0xFFE8F5E9)
 private val GreenAccent     = Color(0xFF4CAF50)
-private val TextDark        = Color(0xFF212121)
-private val TextMedium      = Color(0xFF424242)
-private val TextHint        = Color(0xFF757575)
-private val BorderIdle      = Color(0xFFBDBDBD)
 
 // ── SignUpScreenContent ───────────────────────────────────────────────────────
 
@@ -138,7 +133,6 @@ fun SignUpScreenContent(
         }
     }
 
-    // ── Program bottom sheet ──────────────────────────────────────────────────
     if (showProgramSheet) {
         PickerBottomSheet(
             title = "Select Program",
@@ -153,7 +147,6 @@ fun SignUpScreenContent(
         )
     }
 
-    // ── Year level bottom sheet ───────────────────────────────────────────────
     if (showYearSheet) {
         PickerBottomSheet(
             title = "Select Year Level",
@@ -168,11 +161,10 @@ fun SignUpScreenContent(
         )
     }
 
-    // ── Screen ────────────────────────────────────────────────────────────────
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
@@ -187,21 +179,21 @@ fun SignUpScreenContent(
                 text = "Create Account",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = GreenPrimary,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 32.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Join Smart Campus Today",
                 style = MaterialTheme.typography.bodyLarge,
-                color = TextMedium
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(32.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Column(
@@ -209,7 +201,6 @@ fun SignUpScreenContent(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
-                    // ── Text fields ───────────────────────────────────────────
                     SignUpTextField(value = studentId, onValueChange = { studentId = it },
                         label = "Student ID", icon = Icons.Default.Badge)
 
@@ -225,17 +216,16 @@ fun SignUpScreenContent(
                     SignUpTextField(value = username, onValueChange = { username = it },
                         label = "Username", icon = Icons.Default.AccountCircle)
 
-                    // Password
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
                         label = { Text("Password") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = GreenPrimary) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                         trailingIcon = {
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
                                     if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null, tint = TextHint
+                                    contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         },
@@ -246,17 +236,16 @@ fun SignUpScreenContent(
                         colors = signUpTextFieldColors()
                     )
 
-                    // Confirm Password
                     OutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
                         label = { Text("Confirm Password") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = GreenPrimary) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                         trailingIcon = {
                             IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                                 Icon(
                                     if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null, tint = TextHint
+                                    contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         },
@@ -273,7 +262,6 @@ fun SignUpScreenContent(
                         }
                     )
 
-                    // ── Program selector tile ─────────────────────────────────
                     SelectorTile(
                         label = "Program",
                         value = selectedProgram,
@@ -282,13 +270,12 @@ fun SignUpScreenContent(
                         onClick = { showProgramSheet = true }
                     )
 
-                    // ── Year level selector tiles (4 chips) ───────────────────
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 Icons.Default.CalendarToday,
                                 contentDescription = null,
-                                tint = GreenPrimary,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -296,7 +283,7 @@ fun SignUpScreenContent(
                                 "Year Level",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = TextMedium
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         Row(
@@ -309,7 +296,7 @@ fun SignUpScreenContent(
                                     onClick = { selectedYearLevel = year },
                                     modifier = Modifier.weight(1f),
                                     shape = RoundedCornerShape(12.dp),
-                                    color = if (isSelected) GreenPrimary else GreenLight,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                                     tonalElevation = if (isSelected) 4.dp else 0.dp
                                 ) {
                                     Column(
@@ -317,22 +304,21 @@ fun SignUpScreenContent(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = year.substringBefore(" "),   // "1st"
+                                            text = year.substringBefore(" "),
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = if (isSelected) Color.White else GreenPrimary
+                                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
                                             text = "Year",
                                             fontSize = 10.sp,
-                                            color = if (isSelected) Color.White.copy(alpha = 0.85f)
-                                            else GreenPrimary.copy(alpha = 0.7f)
+                                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f)
+                                            else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                         )
                                     }
                                 }
                             }
                         }
-                        // Show selected label underneath
                         if (selectedYearLevel.isNotBlank()) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
@@ -345,7 +331,7 @@ fun SignUpScreenContent(
                                 Text(
                                     text = selectedYearLevel,
                                     fontSize = 12.sp,
-                                    color = GreenPrimary,
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Medium
                                 )
                             }
@@ -354,7 +340,6 @@ fun SignUpScreenContent(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // ── Sign Up Button ────────────────────────────────────────
                     Button(
                         onClick = {
                             val fullName = "$firstName $lastName".trim()
@@ -389,11 +374,11 @@ fun SignUpScreenContent(
                             .fillMaxWidth()
                             .height(56.dp),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         enabled = authState !is AuthState.Loading
                     ) {
                         if (authState is AuthState.Loading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
                         } else {
                             Text("Create Account", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
@@ -407,10 +392,10 @@ fun SignUpScreenContent(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Already have an account? ", color = TextMedium)
+                Text(text = "Already have an account? ", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(
                     text = "Sign In",
-                    color = GreenPrimary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable { onNavigateToLogin() }
                 )
@@ -420,8 +405,6 @@ fun SignUpScreenContent(
         }
     }
 }
-
-// ── PickerBottomSheet — clean white sheet with green accents ──────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -438,7 +421,7 @@ private fun PickerBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
     ) {
         Column(
@@ -446,7 +429,6 @@ private fun PickerBottomSheet(
                 .fillMaxWidth()
                 .navigationBarsPadding()
         ) {
-            // Sheet header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -457,23 +439,22 @@ private fun PickerBottomSheet(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(GreenLight),
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(icon, contentDescription = null, tint = GreenPrimary, modifier = Modifier.size(22.dp))
+                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(22.dp))
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = TextDark
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
-            HorizontalDivider(color = Color(0xFFF0F0F0))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            // Items list
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -487,7 +468,7 @@ private fun PickerBottomSheet(
                             .fillMaxWidth()
                             .padding(vertical = 3.dp),
                         shape = RoundedCornerShape(12.dp),
-                        color = if (isSelected) GreenPrimary else Color.Transparent
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
                     ) {
                         Row(
                             modifier = Modifier
@@ -499,14 +480,14 @@ private fun PickerBottomSheet(
                                 text = item,
                                 fontSize = 15.sp,
                                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                                color = if (isSelected) Color.White else TextDark,
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.weight(1f)
                             )
                             if (isSelected) {
                                 Icon(
                                     Icons.Default.CheckCircle,
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
@@ -519,8 +500,6 @@ private fun PickerBottomSheet(
         }
     }
 }
-
-// ── SelectorTile — tappable field that opens the bottom sheet ─────────────────
 
 @Composable
 private fun SelectorTile(
@@ -536,7 +515,7 @@ private fun SelectorTile(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        color = if (hasValue) GreenLight else Color(0xFFFAFAFA),
+        color = if (hasValue) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         tonalElevation = 0.dp
     ) {
         Row(
@@ -549,13 +528,13 @@ private fun SelectorTile(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(if (hasValue) GreenPrimary.copy(alpha = 0.12f) else Color(0xFFEEEEEE)),
+                    .background(if (hasValue) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     icon,
                     contentDescription = null,
-                    tint = if (hasValue) GreenPrimary else TextHint,
+                    tint = if (hasValue) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -565,7 +544,7 @@ private fun SelectorTile(
                     text = label,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (hasValue) GreenPrimary else TextHint,
+                    color = if (hasValue) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     letterSpacing = 0.5.sp
                 )
                 Spacer(modifier = Modifier.height(2.dp))
@@ -573,20 +552,18 @@ private fun SelectorTile(
                     text = if (hasValue) value else placeholder,
                     fontSize = 14.sp,
                     fontWeight = if (hasValue) FontWeight.SemiBold else FontWeight.Normal,
-                    color = if (hasValue) TextDark else TextHint
+                    color = if (hasValue) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Icon(
                 if (hasValue) Icons.Default.CheckCircle else Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                tint = if (hasValue) GreenAccent else TextHint,
+                tint = if (hasValue) GreenAccent else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
         }
     }
 }
-
-// ── Reusable text field ───────────────────────────────────────────────────────
 
 @Composable
 private fun SignUpTextField(
@@ -599,7 +576,7 @@ private fun SignUpTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
-        leadingIcon = { Icon(icon, contentDescription = null, tint = GreenPrimary) },
+        leadingIcon = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         shape = RoundedCornerShape(12.dp),
@@ -609,13 +586,13 @@ private fun SignUpTextField(
 
 @Composable
 private fun signUpTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedTextColor       = TextDark,
-    unfocusedTextColor     = TextDark,
-    focusedBorderColor     = GreenPrimary,
-    unfocusedBorderColor   = BorderIdle,
-    focusedLabelColor      = GreenPrimary,
-    unfocusedLabelColor    = TextHint,
-    cursorColor            = GreenPrimary,
-    focusedContainerColor  = GreenLight.copy(alpha = 0.3f),
+    focusedTextColor       = MaterialTheme.colorScheme.onSurface,
+    unfocusedTextColor     = MaterialTheme.colorScheme.onSurface,
+    focusedBorderColor     = MaterialTheme.colorScheme.primary,
+    unfocusedBorderColor    = MaterialTheme.colorScheme.outline,
+    focusedLabelColor      = MaterialTheme.colorScheme.primary,
+    unfocusedLabelColor    = MaterialTheme.colorScheme.onSurfaceVariant,
+    cursorColor            = MaterialTheme.colorScheme.primary,
+    focusedContainerColor  = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
     unfocusedContainerColor = Color.Transparent
 )
