@@ -53,12 +53,6 @@ data class College(
 object CampusColors {
     val PrimaryGreen = Color(0xFF1B5E20)
     val SecondaryGreen = Color(0xFF2E7D32)
-    val LightGreen = Color(0xFF4CAF50)
-    val AccentGreen = Color(0xFF66BB6A)
-    val BackgroundGray = Color(0xFFF8F9FA)
-    val CardWhite = Color(0xFFFFFFFF)
-    val TextPrimary = Color(0xFF212121)
-    val TextSecondary = Color(0xFF757575)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -107,7 +101,7 @@ fun CampusInfoScreen() {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = CampusColors.BackgroundGray,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = {
@@ -210,7 +204,7 @@ fun CollegeCard(college: College) {
         ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = CampusColors.CardWhite
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Column(
@@ -271,7 +265,7 @@ fun CollegeCard(college: College) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(CampusColors.BackgroundGray.copy(alpha = 0.3f))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -297,7 +291,7 @@ fun CollegeCard(college: College) {
                         Text(
                             text = "Contact Email",
                             style = MaterialTheme.typography.labelSmall,
-                            color = CampusColors.TextSecondary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium,
                             fontSize = 11.sp,
                             letterSpacing = 0.5.sp
@@ -306,7 +300,7 @@ fun CollegeCard(college: College) {
                         Text(
                             text = college.contact,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = CampusColors.TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 14.sp
                         )

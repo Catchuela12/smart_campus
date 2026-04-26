@@ -130,7 +130,7 @@ fun GradeScreenContent(onBackClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color(0xFFF5F5F5))
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
@@ -168,7 +168,9 @@ fun GradeScreenContent(onBackClick: () -> Unit) {
                     label = { Text("1st Semester") },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = Color(0xFF2E7D32),
-                        selectedLabelColor = Color.White
+                        selectedLabelColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        labelColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
                 FilterChip(
@@ -177,14 +179,16 @@ fun GradeScreenContent(onBackClick: () -> Unit) {
                     label = { Text("2nd Semester") },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = Color(0xFF2E7D32),
-                        selectedLabelColor = Color.White
+                        selectedLabelColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        labelColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("Semester Grades", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text("Semester Grades", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(12.dp))
 
             currentGrades.forEach { grade ->
@@ -206,7 +210,7 @@ fun GradeScreenContent(onBackClick: () -> Unit) {
 fun GradeRow(code: String, subject: String, units: String, grade: String, status: String) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
@@ -214,15 +218,15 @@ fun GradeRow(code: String, subject: String, units: String, grade: String, status
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(code, fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                Text(subject, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(code, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                Text(subject, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
                 Row {
-                    Text("Units: $units", fontSize = 11.sp, color = Color.Gray)
+                    Text("Units: $units", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(status, fontSize = 11.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
                 }
             }
-            Text(grade, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+            Text(grade, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
