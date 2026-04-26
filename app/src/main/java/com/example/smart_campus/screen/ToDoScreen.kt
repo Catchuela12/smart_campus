@@ -56,15 +56,8 @@ class ToDoScreen : ComponentActivity() {
 
 private val TodoGreen       = Color(0xFF1B5E20)
 private val TodoGreenLight  = Color(0xFF2E7D32)
-private val TodoGreenBg     = Color(0xFFE8F5E9)
-private val TodoBg          = Color(0xFFF8F9FA)
-private val TodoCardBg      = Color.White
-private val TodoTextPrimary = Color(0xFF212121)
-private val TodoTextSecondary = Color(0xFF757575)
 private val TodoRed         = Color(0xFFD32F2F)
-private val TodoRedBg       = Color(0xFFFFEBEE)
 private val TodoAmber       = Color(0xFFF57C00)
-private val TodoAmberBg     = Color(0xFFFFF3E0)
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -152,7 +145,7 @@ fun ToDoScreenContent(
                 Icon(Icons.Default.Add, contentDescription = "Add Task")
             }
         },
-        containerColor = TodoBg
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
 
         if (sortedTasks.isEmpty()) {
@@ -168,7 +161,7 @@ fun ToDoScreenContent(
                         modifier = Modifier
                             .size(96.dp)
                             .clip(CircleShape)
-                            .background(TodoGreenBg),
+                            .background(TodoGreen.copy(alpha = 0.1f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -183,13 +176,13 @@ fun ToDoScreenContent(
                         "All caught up!",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TodoTextPrimary
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         "Tap + to add a new task",
                         fontSize = 14.sp,
-                        color = TodoTextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -233,7 +226,7 @@ fun ToDoScreenContent(
                         SectionHeader(
                             title = "Completed",
                             count = completed.size,
-                            color = TodoTextSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     items(completed, key = { it.id }) { task ->
@@ -345,16 +338,16 @@ private fun TaskCard(
 
     val cardBg by animateColorAsState(
         targetValue = when {
-            task.isCompleted -> Color(0xFFFAFAFA)
-            isOverdue        -> TodoRedBg
-            isDueSoon        -> TodoAmberBg
-            else             -> TodoCardBg
+            task.isCompleted -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            isOverdue        -> TodoRed.copy(alpha = 0.1f)
+            isDueSoon        -> TodoAmber.copy(alpha = 0.1f)
+            else             -> MaterialTheme.colorScheme.surface
         },
         label = "cardBg"
     )
 
     val accentColor = when {
-        task.isCompleted -> TodoTextSecondary
+        task.isCompleted -> MaterialTheme.colorScheme.onSurfaceVariant
         isOverdue        -> TodoRed
         isDueSoon        -> TodoAmber
         else             -> TodoGreen
@@ -399,7 +392,7 @@ private fun TaskCard(
                     text = task.title,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
-                    color = if (task.isCompleted) TodoTextSecondary else TodoTextPrimary,
+                    color = if (task.isCompleted) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                     textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -410,7 +403,7 @@ private fun TaskCard(
                     Text(
                         text = task.description,
                         fontSize = 13.sp,
-                        color = TodoTextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null
@@ -559,7 +552,7 @@ private fun AddEditTaskDialog(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = {
             // Custom drag handle with coloured header strip
             Column(
@@ -639,7 +632,7 @@ private fun AddEditTaskDialog(
                         "TASK TITLE",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TodoTextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         letterSpacing = 1.sp
                     )
                 }
@@ -647,14 +640,14 @@ private fun AddEditTaskDialog(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    placeholder = { Text("e.g. Submit assignment", color = TodoTextSecondary.copy(alpha = 0.5f)) },
+                    placeholder = { Text("e.g. Submit assignment", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
                     leadingIcon = {
-                        Icon(Icons.Default.Title, contentDescription = null, tint = if (title.isNotBlank()) TodoGreen else TodoTextSecondary)
+                        Icon(Icons.Default.Title, contentDescription = null, tint = if (title.isNotBlank()) TodoGreen else MaterialTheme.colorScheme.onSurfaceVariant)
                     },
                     trailingIcon = {
                         if (title.isNotBlank()) {
                             IconButton(onClick = { title = "" }) {
-                                Icon(Icons.Default.Cancel, contentDescription = "Clear", tint = TodoTextSecondary, modifier = Modifier.size(18.dp))
+                                Icon(Icons.Default.Cancel, contentDescription = "Clear", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
                             }
                         }
                     },
@@ -663,11 +656,11 @@ private fun AddEditTaskDialog(
                     shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = TodoGreen,
-                        unfocusedBorderColor = Color(0xFFE0E0E0),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
                         focusedLabelColor = TodoGreen,
                         cursorColor = TodoGreen,
-                        focusedContainerColor = TodoGreenBg.copy(alpha = 0.3f),
-                        unfocusedContainerColor = Color(0xFFFAFAFA)
+                        focusedContainerColor = TodoGreen.copy(alpha = 0.05f),
+                        unfocusedContainerColor = Color.Transparent
                     )
                 )
             }
@@ -677,17 +670,17 @@ private fun AddEditTaskDialog(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(TodoGreen))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("DESCRIPTION", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TodoTextSecondary, letterSpacing = 1.sp)
+                    Text("DESCRIPTION", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 1.sp)
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("(optional)", fontSize = 11.sp, color = TodoTextSecondary.copy(alpha = 0.6f))
+                    Text("(optional)", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    placeholder = { Text("Add more details...", color = TodoTextSecondary.copy(alpha = 0.5f)) },
+                    placeholder = { Text("Add more details...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
                     leadingIcon = {
-                        Icon(Icons.Default.Notes, contentDescription = null, tint = if (description.isNotBlank()) TodoGreen else TodoTextSecondary)
+                        Icon(Icons.Default.Notes, contentDescription = null, tint = if (description.isNotBlank()) TodoGreen else MaterialTheme.colorScheme.onSurfaceVariant)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3,
@@ -695,17 +688,17 @@ private fun AddEditTaskDialog(
                     shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = TodoGreen,
-                        unfocusedBorderColor = Color(0xFFE0E0E0),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
                         focusedLabelColor = TodoGreen,
                         cursorColor = TodoGreen,
-                        focusedContainerColor = TodoGreenBg.copy(alpha = 0.3f),
-                        unfocusedContainerColor = Color(0xFFFAFAFA)
+                        focusedContainerColor = TodoGreen.copy(alpha = 0.05f),
+                        unfocusedContainerColor = Color.Transparent
                     )
                 )
             }
 
             // ── Due date section ──────────────────────────────────────────────
-            HorizontalDivider(color = Color(0xFFF0F0F0))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -715,23 +708,23 @@ private fun AddEditTaskDialog(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(if (hasDueDate) TodoGreenBg else Color(0xFFF5F5F5)),
+                        .background(if (hasDueDate) TodoGreen.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         Icons.Default.CalendarToday,
                         contentDescription = null,
-                        tint = if (hasDueDate) TodoGreen else TodoTextSecondary,
+                        tint = if (hasDueDate) TodoGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Due Date", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = TodoTextPrimary)
+                    Text("Due Date", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                     Text(
                         if (hasDueDate) "Tap date or time to change" else "No deadline set",
                         fontSize = 12.sp,
-                        color = TodoTextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Switch(
@@ -741,7 +734,7 @@ private fun AddEditTaskDialog(
                         checkedThumbColor = Color.White,
                         checkedTrackColor = TodoGreen,
                         uncheckedThumbColor = Color.White,
-                        uncheckedTrackColor = Color(0xFFBDBDBD)
+                        uncheckedTrackColor = MaterialTheme.colorScheme.outline
                     )
                 )
             }
@@ -757,7 +750,7 @@ private fun AddEditTaskDialog(
                         onClick = { showDatePicker = true },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(16.dp),
-                        color = TodoGreenBg,
+                        color = TodoGreen.copy(alpha = 0.1f),
                         tonalElevation = 0.dp
                     ) {
                         Column(
@@ -801,7 +794,7 @@ private fun AddEditTaskDialog(
                         onClick = { showTimePicker = true },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(16.dp),
-                        color = Color(0xFFE8EAF6),
+                        color = Color(0xFF3949AB).copy(alpha = 0.1f),
                         tonalElevation = 0.dp
                     ) {
                         Column(
@@ -855,8 +848,8 @@ private fun AddEditTaskDialog(
                         .weight(1f)
                         .height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = TodoTextSecondary),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0))
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onSurfaceVariant),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
@@ -933,7 +926,7 @@ private fun AddEditTaskDialog(
         Dialog(onDismissRequest = { showTimePicker = false }) {
             Card(
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 Column(
@@ -1031,13 +1024,13 @@ private fun AddEditTaskDialog(
                         TimePicker(
                             state = timePickerState,
                             colors = TimePickerDefaults.colors(
-                                clockDialColor        = Color(0xFFEEF0FB),
+                                clockDialColor        = MaterialTheme.colorScheme.surfaceVariant,
                                 selectorColor         = Color(0xFF3949AB),
                                 containerColor        = Color.Transparent,
                                 clockDialSelectedContentColor  = Color.White,
                                 clockDialUnselectedContentColor = Color(0xFF3949AB),
                                 timeSelectorSelectedContainerColor   = Color(0xFF3949AB),
-                                timeSelectorUnselectedContainerColor  = Color(0xFFEEF0FB),
+                                timeSelectorUnselectedContainerColor  = MaterialTheme.colorScheme.surfaceVariant,
                                 timeSelectorSelectedContentColor     = Color.White,
                                 timeSelectorUnselectedContentColor   = Color(0xFF3949AB)
                             )
@@ -1057,8 +1050,8 @@ private fun AddEditTaskDialog(
                                 .weight(1f)
                                 .height(50.dp),
                             shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = TodoTextSecondary),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0))
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onSurfaceVariant),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                         ) {
                             Text("Cancel", fontWeight = FontWeight.SemiBold)
                         }
