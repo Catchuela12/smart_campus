@@ -58,13 +58,7 @@ private val ColorGreen   = Color(0xFF16A34A)
 
 private val HeaderStart   = Color(0xFF1B4332)
 private val HeaderEnd     = Color(0xFF2D6A4F)
-private val BgScreen      = Color(0xFFF8FAFC)
-private val BgTimeCol     = Color(0xFFEFF6FF)
-private val BorderColor   = Color(0xFFE2E8F0)
-private val TimeTextColor = Color(0xFF64748B)
 private val TextWhite     = Color.White
-private val TextDark      = Color(0xFF0F172A)
-private val TopBarBg      = Color(0xFF1B4332)
 
 private val DAY_LABELS    = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
 
@@ -240,13 +234,13 @@ fun TimeCell(slot: Int) {
         modifier = Modifier
             .width(TIME_COL_WIDTH)
             .height(SLOT_HEIGHT)
-            .background(BgTimeCol)
-            .border(0.5.dp, BorderColor)
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .border(0.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
             .padding(horizontal = 4.dp)
     ) {
         Text(
             text = slotToRangeLabel(slot),
-            color = TimeTextColor,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 8.sp,
             textAlign = TextAlign.Center,
             lineHeight = 11.sp
@@ -282,13 +276,13 @@ fun ScheduleScreenContent(onBack: () -> Unit = {}) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = TopBarBg,
+                    containerColor = HeaderStart,
                     titleContentColor = TextWhite,
                     navigationIconContentColor = TextWhite
                 )
             )
         },
-        containerColor = BgScreen
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
         val verticalScroll   = rememberScrollState()
@@ -325,10 +319,10 @@ fun ScheduleScreenContent(onBack: () -> Unit = {}) {
                                                 .width(DAY_COL_WIDTH)
                                                 .height(SLOT_HEIGHT)
                                                 .background(
-                                                    if (slot % 2 == 0) Color.White
-                                                    else Color(0xFFFAFAFA)
+                                                    if (slot % 2 == 0) MaterialTheme.colorScheme.surface
+                                                    else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
                                                 )
-                                                .border(0.5.dp, BorderColor)
+                                                .border(0.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                                         )
                                     }
                                 }
