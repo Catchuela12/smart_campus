@@ -1,6 +1,7 @@
 package com.example.smart_campus.screen.Announcement_data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -18,6 +19,10 @@ interface AnnouncementDao {
 
     @Update
     suspend fun updateAnnouncement(announcement: Announcement)
+
+    // ← NEW: required for admin delete
+    @Delete
+    suspend fun deleteAnnouncement(announcement: Announcement)
 
     @Query("SELECT * FROM announcements WHERE id = :id")
     suspend fun getAnnouncementById(id: Int): Announcement?

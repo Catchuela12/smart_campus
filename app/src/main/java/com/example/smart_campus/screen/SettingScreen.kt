@@ -71,12 +71,6 @@ class SettingScreen : ComponentActivity() {
 private val GreenDark    = Color(0xFF1B5E20)
 private val GreenMid     = Color(0xFF2E7D32)
 private val GreenLight   = Color(0xFF4CAF50)
-private val GreenBg      = Color(0xFFE8F5E9)
-private val PageBg       = Color(0xFFF2F4F7)
-private val CardBg       = Color.White
-private val TextPrimary  = Color(0xFF1A1A1A)
-private val TextSecondary = Color(0xFF757575)
-private val DividerColor = Color(0xFFF0F0F0)
 
 // ── SettingsView ──────────────────────────────────────────────────────────────
 
@@ -144,10 +138,10 @@ fun SettingsView(
                     modifier = Modifier
                         .size(52.dp)
                         .clip(RoundedCornerShape(14.dp))
-                        .background(GreenBg),
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Default.Lock, contentDescription = null, tint = GreenDark, modifier = Modifier.size(26.dp))
+                    Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(26.dp))
                 }
             },
             title = {
@@ -160,12 +154,12 @@ fun SettingsView(
                         value = currentPassword,
                         onValueChange = { currentPassword = it },
                         label = { Text("Current Password") },
-                        leadingIcon = { Icon(Icons.Default.LockOpen, contentDescription = null, tint = GreenMid) },
+                        leadingIcon = { Icon(Icons.Default.LockOpen, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                         trailingIcon = {
                             IconButton(onClick = { currentPassVisible = !currentPassVisible }) {
                                 Icon(
                                     if (currentPassVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null, tint = TextSecondary
+                                    contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         },
@@ -181,12 +175,12 @@ fun SettingsView(
                         value = newPassword,
                         onValueChange = { newPassword = it },
                         label = { Text("New Password") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = GreenMid) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                         trailingIcon = {
                             IconButton(onClick = { newPassVisible = !newPassVisible }) {
                                 Icon(
                                     if (newPassVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null, tint = TextSecondary
+                                    contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         },
@@ -206,12 +200,12 @@ fun SettingsView(
                         value = confirmNewPassword,
                         onValueChange = { confirmNewPassword = it },
                         label = { Text("Confirm New Password") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = GreenMid) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                         trailingIcon = {
                             IconButton(onClick = { confirmPassVisible = !confirmPassVisible }) {
                                 Icon(
                                     if (confirmPassVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null, tint = TextSecondary
+                                    contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         },
@@ -250,12 +244,12 @@ fun SettingsView(
                         }
                     },
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenDark),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     enabled = authState !is AuthState.Loading,
                     modifier = Modifier.fillMaxWidth().height(50.dp)
                 ) {
                     if (authState is AuthState.Loading) {
-                        CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White, strokeWidth = 2.dp)
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
                     } else {
                         Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(6.dp))
@@ -283,10 +277,10 @@ fun SettingsView(
             shape = RoundedCornerShape(24.dp),
             icon = {
                 Box(
-                    modifier = Modifier.size(52.dp).clip(RoundedCornerShape(14.dp)).background(GreenBg),
+                    modifier = Modifier.size(52.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Default.FormatSize, contentDescription = null, tint = GreenDark, modifier = Modifier.size(26.dp))
+                    Icon(Icons.Default.FormatSize, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(26.dp))
                 }
             },
             title = { Text("Font Size", fontWeight = FontWeight.Bold, fontSize = 20.sp, textAlign = TextAlign.Center) },
@@ -298,14 +292,14 @@ fun SettingsView(
                     // Preview
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = GreenBg,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = "Smart Campus",
                             fontSize = when (fontSize) { 0 -> 13.sp; 2 -> 19.sp; else -> 16.sp },
                             fontWeight = FontWeight.SemiBold,
-                            color = GreenDark,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(vertical = 16.dp)
                         )
@@ -322,23 +316,23 @@ fun SettingsView(
                                 onClick = { fontSize = value },
                                 modifier = Modifier.weight(1f),
                                 shape = RoundedCornerShape(12.dp),
-                                color = if (selected) GreenDark else GreenBg
+                                color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
                             ) {
                                 Column(
                                     modifier = Modifier.padding(vertical = 14.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = when (value) { 0 -> "A"; 2 -> "A"; else -> "A" },
+                                        text = "A",
                                         fontSize = when (value) { 0 -> 13.sp; 2 -> 22.sp; else -> 17.sp },
                                         fontWeight = FontWeight.Bold,
-                                        color = if (selected) Color.White else GreenDark
+                                        color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = label,
                                         fontSize = 11.sp,
-                                        color = if (selected) Color.White.copy(alpha = 0.85f) else GreenDark.copy(alpha = 0.7f)
+                                        color = if (selected) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                     )
                                 }
                             }
@@ -354,7 +348,7 @@ fun SettingsView(
                         showFontSize = false
                     },
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenDark),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     modifier = Modifier.fillMaxWidth().height(50.dp)
                 ) {
                     Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -390,26 +384,26 @@ fun SettingsView(
                             .clip(RoundedCornerShape(20.dp))
                             .background(
                                 Brush.verticalGradient(
-                                    colors = listOf(GreenMid, GreenLight)
+                                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
                                 )
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.School, contentDescription = null, tint = Color.White, modifier = Modifier.size(44.dp))
+                        Icon(Icons.Default.School, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(44.dp))
                     }
 
-                    Text("Smart Campus", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, color = GreenDark)
-                    Surface(shape = RoundedCornerShape(8.dp), color = GreenBg) {
+                    Text("Smart Campus", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, color = MaterialTheme.colorScheme.primary)
+                    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.primaryContainer) {
                         Text(
                             "Version 1.0.5",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = GreenMid,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
 
-                    HorizontalDivider(color = DividerColor)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                     // Info rows
                     AboutRow(label = "Platform", value = "Android")
@@ -417,12 +411,12 @@ fun SettingsView(
                     AboutRow(label = "Build", value = "Release")
                     AboutRow(label = "Min SDK", value = "Android 8.0+")
 
-                    HorizontalDivider(color = DividerColor)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                     Text(
                         "A modern student portal for managing schedules, grades, tasks, and campus announcements.",
                         fontSize = 12.sp,
-                        color = TextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         lineHeight = 18.sp
                     )
@@ -432,7 +426,7 @@ fun SettingsView(
                 Button(
                     onClick = { showAboutApp = false },
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenDark),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     modifier = Modifier.fillMaxWidth().height(50.dp)
                 ) { Text("Close", fontWeight = FontWeight.Bold) }
             },
@@ -471,7 +465,7 @@ fun SettingsView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(PageBg)
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -527,8 +521,8 @@ fun SettingsView(
             SettingsSection(title = "Notifications", icon = Icons.Default.Notifications) {
                 SettingsSwitchRow(
                     icon = Icons.Default.Notifications,
-                    iconBg = Color(0xFFE8F5E9),
-                    iconTint = GreenMid,
+                    iconBg = MaterialTheme.colorScheme.primaryContainer,
+                    iconTint = MaterialTheme.colorScheme.primary,
                     label = "Push Notifications",
                     subtitle = if (pushEnabled) "Enabled" else "Disabled",
                     checked = pushEnabled,
@@ -559,8 +553,8 @@ fun SettingsView(
                 SettingsDivider()
                 SettingsRow(
                     icon = Icons.Default.Info,
-                    iconBg = GreenBg,
-                    iconTint = GreenDark,
+                    iconBg = MaterialTheme.colorScheme.primaryContainer,
+                    iconTint = MaterialTheme.colorScheme.primary,
                     label = "About App",
                     subtitle = "Version 1.0.5",
                     onClick = { showAboutApp = true }
@@ -583,20 +577,20 @@ private fun SettingsSection(
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         // Section header
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, tint = GreenMid, modifier = Modifier.size(16.dp))
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
             Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = title.uppercase(),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = GreenMid,
+                color = MaterialTheme.colorScheme.primary,
                 letterSpacing = 1.sp
             )
         }
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = CardBg),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(content = content)
@@ -633,10 +627,10 @@ private fun SettingsRow(
         }
         Spacer(modifier = Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(label, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = TextPrimary)
-            Text(subtitle, fontSize = 12.sp, color = TextSecondary)
+            Text(label, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+            Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFFBDBDBD), modifier = Modifier.size(20.dp))
+        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(20.dp))
     }
 }
 
@@ -669,17 +663,17 @@ private fun SettingsSwitchRow(
         }
         Spacer(modifier = Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(label, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = TextPrimary)
-            Text(subtitle, fontSize = 12.sp, color = TextSecondary)
+            Text(label, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+            Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
-                checkedTrackColor = GreenMid,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
                 uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = Color(0xFFBDBDBD)
+                uncheckedTrackColor = MaterialTheme.colorScheme.outline
             )
         )
     }
@@ -691,7 +685,7 @@ private fun SettingsSwitchRow(
 private fun SettingsDivider() {
     HorizontalDivider(
         modifier = Modifier.padding(horizontal = 16.dp),
-        color = DividerColor,
+        color = MaterialTheme.colorScheme.outlineVariant,
         thickness = 1.dp
     )
 }
@@ -720,7 +714,7 @@ private fun PasswordStrengthBar(password: String) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Password strength", fontSize = 11.sp, color = TextSecondary)
+            Text("Password strength", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = color)
         }
         Row(
@@ -733,7 +727,7 @@ private fun PasswordStrengthBar(password: String) {
                         .weight(1f)
                         .height(4.dp)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(if (strength >= step) color else Color(0xFFE0E0E0))
+                        .background(if (strength >= step) color else MaterialTheme.colorScheme.outlineVariant)
                 )
             }
         }
@@ -749,22 +743,20 @@ private fun AboutRow(label: String, value: String) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(label, fontSize = 13.sp, color = TextSecondary)
-        Text(value, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = TextPrimary)
+        Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
-// ── TextField colors ──────────────────────────────────────────────────────────
-
 @Composable
 private fun settingsTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedTextColor        = TextPrimary,
-    unfocusedTextColor      = TextPrimary,
-    focusedBorderColor      = GreenMid,
-    unfocusedBorderColor    = Color(0xFFBDBDBD),
-    focusedLabelColor       = GreenMid,
-    unfocusedLabelColor     = TextSecondary,
-    cursorColor             = GreenMid,
-    focusedContainerColor   = GreenBg.copy(alpha = 0.3f),
+    focusedTextColor        = MaterialTheme.colorScheme.onSurface,
+    unfocusedTextColor      = MaterialTheme.colorScheme.onSurface,
+    focusedBorderColor      = MaterialTheme.colorScheme.primary,
+    unfocusedBorderColor    = MaterialTheme.colorScheme.outline,
+    focusedLabelColor       = MaterialTheme.colorScheme.primary,
+    unfocusedLabelColor     = MaterialTheme.colorScheme.onSurfaceVariant,
+    cursorColor             = MaterialTheme.colorScheme.primary,
+    focusedContainerColor   = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
     unfocusedContainerColor = Color.Transparent
 )
